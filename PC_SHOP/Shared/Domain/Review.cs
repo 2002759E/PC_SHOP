@@ -11,15 +11,15 @@ namespace PC_SHOP.Shared.Domain
         public int ReviewID { get; set; }
         public decimal Rating { get; set; }
         public string Title { get; set;}
+        
+        public virtual User{get;set;}
+        
+        public int UserID
 
-        
-       
-        
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        
 
-        public bool IsPublic { get; set; }
-        public bool IsDeleted { get; set; }
+        
        
     }
 }

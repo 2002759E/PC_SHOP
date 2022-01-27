@@ -10,9 +10,7 @@ namespace PC_SHOP.Shared.Domain
     {
         public int ReviewID { get; set; }
         public decimal Rating { get; set; }
-        public string Title { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string Title { get; set;}
 
         
        
@@ -22,6 +20,6 @@ namespace PC_SHOP.Shared.Domain
 
         public bool IsPublic { get; set; }
         public bool IsDeleted { get; set; }
-        public string Review_Description { get; set; }
+       
     }
 }

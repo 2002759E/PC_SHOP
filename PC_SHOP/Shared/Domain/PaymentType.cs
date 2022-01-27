@@ -8,7 +8,6 @@ namespace PC_SHOP.Shared.Domain
 {
     public class PaymentType
     {
-        public int PaymentTypeID { get; set; }
-        public string Payment_Type { get; set; }
+        
     }
 }

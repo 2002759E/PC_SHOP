@@ -18,9 +18,6 @@ namespace PC_SHOP.Server.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
-        public DbSet<Review> Reviews { get; set; }
-        public DbSet<PaymentType> Payments { get; set; }
-        public DbSet<Brand> Brands { get; set; }
 
     }
 }

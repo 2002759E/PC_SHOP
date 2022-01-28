@@ -1,15 +1,15 @@
-﻿@page "/brands/"
+﻿@page "/offers/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
 
-<h3>Categories</h3>
+<h3>offers</h3>
 
 
-@if (Brands == null)
+@if (offers == null)
 {
 
-    <div class="alert alert-info">Loading Brands...</div>
+    <div class="alert alert-info">Loading offers...</div>
 
 }
 else
@@ -22,18 +22,18 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var brand in Brands)
+            @foreach (var offer in offers)
             {
                 <tr>
-                    <td>@brand.Name</td>
+                    <td>@offer.Name</td>
                     <td>
-                        <a href="/Categories/view/@brand.Id" class="btn btn-primary">
+                        <a href="/offers/view/@offer.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
-                        <a href="/Categories/edit/@brand.Id" class="btn btn-warning">
+                        <a href="/offers/edit/@offer.Id" class="btn btn-warning">
                             <span class="oi oi-pencil"></span>
                         </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete (brand.Id))">
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (offer.Id))">
                             <span class="oi oi-delete"></span>
                         </button>
                     </td>
@@ -46,23 +46,24 @@ else
 
 
 @code {
-    private List<Brand> Brands;
+    private List<Offer> offers;
 
     protected async override Task OnInitializedAsync()
     {
-        Brands = await _client.GetFromJsonAsync<List<Brand>>($"{Endpoints.BrandsEndpoint}");
+        offers = await _client.GetFromJsonAsync<List<Offer>>($"{Endpoints.OffersEndpoint}");
     }
 
-    async Task Delete(int brandId)
+    async Task Delete(int offerId)
     {
-        var brand = Brands.First(q => q.Id == brandId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you wan to delete {brand.Name}?");
+        var offer = offers.First(q => q.Id == offerId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you wan to delete {offer.Name}?");
         if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{brandId}");
+            await _client.DeleteAsync($"{Endpoints.OffersEndpoint}/{offerId}");
             await OnInitializedAsync();
 
         }
     }
 
 }
+

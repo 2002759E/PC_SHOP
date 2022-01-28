@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PC_SHOP.Server.Data;
+using PC_SHOP.Server.IRepository;
 using PC_SHOP.Server.Models;
+using PC_SHOP.Server.Repository;
 using System.Linq;
 
 namespace PC_SHOP.Server
@@ -40,6 +42,8 @@ namespace PC_SHOP.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

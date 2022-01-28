@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\ListItems\" />
-    <Folder Include="Pages\Requests\" />
+    <Folder Include="Pages\Reviews\" />
+    <Folder Include="Pages\Payment\" />
   </ItemGroup>
 
 </Project>

@@ -3,13 +3,12 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 
-<h3>Categories</h3>
-
+<h3>Brands</h3>
 
 @if (Brands == null)
 {
 
-    <div class="alert alert-info">Loading Brands...</div>
+    <div class="alert alert-info">Loading offers...</div>
 
 }
 else
@@ -27,10 +26,10 @@ else
                 <tr>
                     <td>@brand.Name</td>
                     <td>
-                        <a href="/Categories/view/@brand.Id" class="btn btn-primary">
+                        <a href="/offers/view/@brand.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
-                        <a href="/Categories/edit/@brand.Id" class="btn btn-warning">
+                        <a href="/offers/edit/@brand.Id" class="btn btn-warning">
                             <span class="oi oi-pencil"></span>
                         </a>
                         <button class="btn btn-danger" @onclick="@(()=>Delete (brand.Id))">
@@ -59,7 +58,7 @@ else
         var confirm = await js.InvokeAsync<bool>("confirm", $"Do you wan to delete {brand.Name}?");
         if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{brandId}");
+            await _client.DeleteAsync($"{Endpoints.OffersEndpoint}/{brandId}");
             await OnInitializedAsync();
 
         }

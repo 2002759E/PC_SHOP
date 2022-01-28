@@ -1,0 +1,75 @@
+﻿@page "/listitems/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3>Listed Items</h3>
+
+@if (ListItems == null)
+{
+
+    <div class="alert alert-info">Loading Items...</div>
+
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var listitem in ListItems)
+            {
+                <tr>
+                    <td>@listitem.Item.Name</td>
+                    <td>@listitem.Item.Description</td>
+                    <td>@listitem.Item.Price</td>
+                    <td>@listitem.Item.Category.Name</td>
+                    <td>@listitem.Item.Brand.Name</td>
+                    <td>
+                        <a href="/vehicles/view/@listitem.Item.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/vehicles/edit/@listitem.Item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (listitem.Item.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+
+    private List<ListItem> ListItems;
+
+    protected async override Task OnInitializedAsync()
+    {
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+    }
+
+    async Task Delete(int listitemId)
+    {
+        var listitem = ListItems.First(q => q.Id == listitemId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {listitem.Item.Name}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ItemsEndpoint}/{listitemId}");
+            await OnInitializedAsync();
+
+        }
+    }
+
+}

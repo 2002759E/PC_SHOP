@@ -1,0 +1,73 @@
+﻿@page "/requests/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3>Requests</h3>
+
+@if (Requests == null)
+{
+
+    <div class="alert alert-info">Loading Requests...</div>
+
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Item Requested</th>
+                <th>Offer</th>
+                <th>Payment</th>
+                <th>Item For Trade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Requests)
+            {
+            <tr>
+                <td>@request.Item.Name</td>
+                <td>@request.Offer.Name</td>
+                <td>@request.Payment.Name</td>
+                <td>@request.ListItem.Item.Name</td>
+                <td>
+                    <a href="/vehicles/view/@request.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/vehicles/edit/@request.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+
+    private List<Request> Requests;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Requests = await _client.GetFromJsonAsync<List<Request>>($"{Endpoints.RequestsEndpoint}");
+    }
+
+    async Task Delete(int requestId)
+    {
+        var request = Requests.First(q => q.Id == requestId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {request.Payment}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ItemsEndpoint}/{requestId}");
+            await OnInitializedAsync();
+
+        }
+    }
+
+}

@@ -29,7 +29,7 @@ namespace PC_SHOP.Server.Controllers
 
         public async Task<IActionResult> GetRequests()
         {
-            var Requests = await _unitOfWork.Requests.GetAll();
+            var Requests = await _unitOfWork.Requests.GetAll(includes: q => q.Include(x => x.Offer).Include(x => x.Payment).Include(x => x.Item).Include(x => x.ListItem));
             return Ok(Requests);
         }
 

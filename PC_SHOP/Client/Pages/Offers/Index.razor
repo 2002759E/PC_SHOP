@@ -3,10 +3,10 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 
-<h3>offers</h3>
+<h3>Offers</h3>
 
 
-@if (offers == null)
+@if (Offers == null)
 {
 
     <div class="alert alert-info">Loading offers...</div>
@@ -22,7 +22,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var offer in offers)
+            @foreach (var offer in Offers)
             {
                 <tr>
                     <td>@offer.Name</td>
@@ -46,16 +46,16 @@ else
 
 
 @code {
-    private List<Offer> offers;
+    private List<Offer> Offers;
 
     protected async override Task OnInitializedAsync()
     {
-        offers = await _client.GetFromJsonAsync<List<Offer>>($"{Endpoints.OffersEndpoint}");
+        Offers = await _client.GetFromJsonAsync<List<Offer>>($"{Endpoints.OffersEndpoint}");
     }
 
     async Task Delete(int offerId)
     {
-        var offer = offers.First(q => q.Id == offerId);
+        var offer = Offers.First(q => q.Id == offerId);
         var confirm = await js.InvokeAsync<bool>("confirm", $"Do you wan to delete {offer.Name}?");
         if (confirm)
         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PC_SHOP.Shared.Domain
 {
-   public class Brand : BaseDomainModel
+    public class Offer : BaseDomainModel
     {
         public string Name { get; set; }
     }

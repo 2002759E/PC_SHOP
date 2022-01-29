@@ -1,0 +1,36 @@
+﻿@page "/offers/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3 class="card-title">Create New Offers</h3>
+<hr />
+<br />
+
+<EditForm Model="@offer" OnValidSubmit="CreateOffer">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Offer Name:</label>
+        <div>
+            <InputText @bind-Value="@offer.Name" class="form-control" />
+            <ValidationMessage For="@(() => offer.Name)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-block">
+        Create Offer
+    </button>
+
+</EditForm>
+
+@code {
+    Offer offer = new Offer();
+
+    private async Task CreateOffer()
+    {
+        await _client.PostAsJsonAsync(Endpoints.OffersEndpoint, offer);
+        _navManager.NavigateTo("/offers/");
+    }
+}

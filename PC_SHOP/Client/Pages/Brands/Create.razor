@@ -1,0 +1,36 @@
+﻿@page "/brands/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3 class="card-title">Create New Brands</h3>
+<hr />
+<br />
+
+<EditForm Model="@brand" OnValidSubmit="CreateBrand">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Brand Name:</label>
+        <div>
+            <InputText @bind-Value="@brand.Name" class="form-control" />
+            <ValidationMessage For="@(() => brand.Name)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-block">
+        Create Brand
+    </button>
+
+</EditForm>
+
+@code {
+    Brand brand = new Brand();
+
+    private async Task CreateBrand()
+    {
+        await _client.PostAsJsonAsync(Endpoints.BrandsEndpoint, brand);
+        _navManager.NavigateTo("/brands/");
+    }
+}

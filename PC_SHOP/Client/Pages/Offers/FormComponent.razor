@@ -1,0 +1,30 @@
+﻿<h3>FormComponent</h3>
+
+<EditForm Model="@offer" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Offer Name:</label>
+            <div>
+                <InputText @bind-Value="@offer.Name" class="form-control" />
+                <ValidationMessage For="@(() => offer.Name)" />
+            </div>
+        </div>
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+             @ButtonText
+        </button>
+    }
+    <BackToList Target="offers" />
+    
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Offer offer { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

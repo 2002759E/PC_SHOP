@@ -1,0 +1,31 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@listitem" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Price:</label>
+        <div>
+            <InputNumber @bind-Value="@listitem.Price" class="form-control" />
+            <ValidationMessage For="@(() => listitem.Price)" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        @ButtonText
+    </button>
+</EditForm>
+
+@code {
+
+    [Parameter] public ListItem listitem { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Item> Items;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+    }
+
+}

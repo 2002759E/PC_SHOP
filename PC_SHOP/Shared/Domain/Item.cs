@@ -11,10 +11,11 @@ namespace PC_SHOP.Shared.Domain
     public class Item : BaseDomainModel
     {
         public string Name { get; set; }
-        public double Price { get; set; }
         public string Description { get; set; }
         public int CategoryID { get; set; }
         public virtual Category Category { get; set; }
+        public int ConditionID { get; set; }
+        public virtual Condition Condition { get; set; }
         public int BrandID { get; set; }
         public virtual Brand Brand { get; set; }
         public virtual List<ListItem> ListItems { get; set; }

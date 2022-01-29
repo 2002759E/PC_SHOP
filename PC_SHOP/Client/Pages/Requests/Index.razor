@@ -8,7 +8,7 @@
 <br />
 <a href="/requests/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
-    List New Request
+    Create New Request
 </a>
 <br />
 <br />
@@ -25,6 +25,7 @@ else
         <thead>
             <tr>
                 <th>Item Requested</th>
+                <th>Item Condition</th>
                 <th>Item Price($)</th>
                 <th>Offer</th>
                 <th>Payment</th>
@@ -49,10 +50,20 @@ else
                                     if (@request.ListItem.ItemID == item.Id)
                                     {
                                         <td>@item.Name</td>
-                                        <td>@item.Price</td>
+                                        <td>@item.Condition.Name</td>
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@request.ListItemID == listItem.Id)
+                        {
+                            <td>@listItem.Price</td>
                         }
                     }
                 }

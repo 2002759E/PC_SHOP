@@ -1,4 +1,4 @@
-﻿@page "/listitems/edit/{id:int}"
+﻿@page "/listitems/edititem/{id:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 
@@ -7,13 +7,14 @@
 <FormComponent ButtonText="Update" OnValidSubmit="EditItem" item="item" />
 
 @code {
+
+
     [Parameter] public int id { get; set; }
     Item item = new Item();
 
     protected async override Task OnParametersSetAsync()
     {
-        item = await
-        _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{id}");
+        item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{id}"); 
     }
 
     async Task EditItem()

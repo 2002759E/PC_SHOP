@@ -13,53 +13,53 @@ namespace PC_SHOP.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemsController : Controller
+    public class ConditionsController : Controller
     {
 
         private readonly IUnitOfWork _unitOfWork;
 
 
-        public ItemsController(IUnitOfWork unitOfWork)
+        public ConditionsController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        // GET: api/Items
+        // GET: api/Conditions
         [HttpGet]
 
-        public async Task<IActionResult> GetItems()
+        public async Task<IActionResult> GetConditions()
         {
-            var items = await _unitOfWork.Items.GetAll(includes: q => q.Include(x => x.Category).Include(x => x.Brand).Include(x => x.Condition));
-            return Ok(items);
+            var Conditions = await _unitOfWork.Conditions.GetAll();
+            return Ok(Conditions);
         }
 
-        // GET: api/Items/5
+        // GET: api/Conditions/5
         [HttpGet("{id}")]
 
-        public async Task<IActionResult> GetItem(int id)
+        public async Task<IActionResult> GetCondition(int id)
         {
 
-            var item = await _unitOfWork.Items.Get(q => q.Id == id);
+            var Condition = await _unitOfWork.Conditions.Get(q => q.Id == id);
 
-            if (item == null)
+            if (Condition == null)
             {
                 return NotFound();
             }
 
-            return Ok(item);
+            return Ok(Condition);
         }
 
-        // PUT: api/Items/5
+        // PUT: api/Conditions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, Item item)
+        public async Task<IActionResult> PutCondition(int id, Condition Condition)
         {
-            if (id != item.Id)
+            if (id != Condition.Id)
             {
                 return BadRequest();
             }
 
-            _unitOfWork.Items.Update(item);
+            _unitOfWork.Conditions.Update(Condition);
 
             try
             {
@@ -67,7 +67,7 @@ namespace PC_SHOP.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await ItemExists(id))
+                if (!await ConditionExists(id))
                 {
                     return NotFound();
                 }
@@ -80,37 +80,37 @@ namespace PC_SHOP.Server.Controllers
             return NoContent();
         }
 
-        // POST: api/Items
+        // POST: api/Conditions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<Condition>> PostCondition(Condition Condition)
         {
-            await _unitOfWork.Items.Insert(item);
+            await _unitOfWork.Conditions.Insert(Condition);
             await _unitOfWork.Save(HttpContext);
 
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            return CreatedAtAction("GetCondition", new { id = Condition.Id }, Condition);
         }
 
-        // DELETE: api/Items/5
+        // DELETE: api/Conditions/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(int id)
+        public async Task<IActionResult> DeleteCondition(int id)
         {
-            var item = await _unitOfWork.Items.Get(q => q.Id == id);
-            if (item == null)
+            var Condition = await _unitOfWork.Conditions.Get(q => q.Id == id);
+            if (Condition == null)
             {
                 return NotFound();
             }
 
-            await _unitOfWork.Items.Delete(id);
+            await _unitOfWork.Conditions.Delete(id);
             await _unitOfWork.Save(HttpContext);
 
             return NoContent();
         }
 
-        private async Task<bool> ItemExists(int id)
+        private async Task<bool> ConditionExists(int id)
         {
-            var item = await _unitOfWork.Items.Get(q => q.Id == id);
-            return item != null;
+            var Condition = await _unitOfWork.Conditions.Get(q => q.Id == id);
+            return Condition != null;
         }
     }
 }

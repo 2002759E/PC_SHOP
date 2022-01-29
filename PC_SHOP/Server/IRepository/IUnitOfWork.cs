@@ -13,6 +13,7 @@ namespace PC_SHOP.Server.IRepository
         Task Save(HttpContext httpContext);
         IGenericRepository<Brand> Brands { get; }
         IGenericRepository<Category> Categories { get; }
+        IGenericRepository<Condition> Conditions { get; }
         IGenericRepository<Item> Items { get; }
         IGenericRepository<ListItem> ListItems { get; }
         IGenericRepository<Offer> Offers { get; }

@@ -26,9 +26,10 @@ else
             <tr>
                 <th>Name</th>
                 <th>Description</th>
-                <th>Price</th>
-                <th>Category</th>
+                <th>Price($)</th>
+                <th>Condition</th>
                 <th>Brand</th>
+                <th>Category</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -38,14 +39,14 @@ else
             <tr>
                 <td>@listitem.Item.Name</td>
                 <td>@listitem.Item.Description</td>
-                <td>@listitem.Item.Price</td>
+                <td>@listitem.Price</td>
                 @if (Items != null)
                 {
                     foreach (var item in Items)
                     {
                         if (@listitem.ItemID == item.Id)
                         {
-                            <td>@item.Category.Name</td>
+                            <td>@item.Condition.Name</td>
                         }
                     }
                 }
@@ -59,9 +60,22 @@ else
                         }
                     }
                 }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
+                        {
+                            <td>@item.Category.Name</td>
+                        }
+                    }
+                }
                 <td>
                     <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
                         <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
+                        <span class="oi oi-dollar"></span>
                     </a>
                     @if (Items != null)
                     {
@@ -69,17 +83,17 @@ else
                         {
                             if (@listitem.ItemID == item.Id)
                             {
-                            <a href="/listitems/edit/@item.Id" class="btn btn-warning">
-                                <span class="oi oi-pencil"></span>
-                            </a>
+                                <a href="/listitems/edititem/@item.Id" class="btn btn-warning">
+                                    <span class="oi oi-pencil"></span>
+                                </a>
                             }
                         }
                     }
                     <button class="btn btn-danger" @onclick="@(()=>Delete (listitem.Id))">
                         <span class="oi oi-delete"></span>
                     </button>
-                    </td>
-                </tr>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

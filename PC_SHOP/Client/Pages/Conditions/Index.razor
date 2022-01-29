@@ -1,0 +1,71 @@
+﻿@page "/conditions/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3>Conditions</h3>
+<a href="/Conditions/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Condition
+</a>
+
+@if (Conditions == null)
+{
+
+    <div class="alert alert-info">Loading Conditions...</div>
+
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Condition in Conditions)
+            {
+                <tr>
+                    <td>@Condition.Name</td>
+                    <td>
+                        <a href="/Conditions/view/@Condition.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/Conditions/edit/@Condition.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (Condition.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
+@code {
+    private List<Condition> Conditions;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Conditions = await _client.GetFromJsonAsync<List<Condition>>($"{Endpoints.ConditionsEndpoint}");
+    }
+
+    async Task Delete(int ConditionId)
+    {
+        var Condition = Conditions.First(q => q.Id == ConditionId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you wan to delete {Condition.Name}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ConditionsEndpoint}/{ConditionId}");
+            await OnInitializedAsync();
+
+        }
+    }
+
+}

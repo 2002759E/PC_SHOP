@@ -26,36 +26,36 @@ else
             <tr>
                 <th>Name</th>
                 <th>Description</th>
-                <th>Price</th>
-                <th>Category</th>
+                <th>Condition</th>
                 <th>Brand</th>
+                <th>Category</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Items)
             {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Description</td>
-                    <td>@item.Price</td>
-                    <td>@item.Category.Name</td>
-                    <td>@item.Brand.Name</td>
-                    <td>
-                        <a href="/items/view/@item.Id" class="btn btn-primary">
-                            <span class="oi oi-book"></span>
-                        </a>
-                        <a href="/items/sell/@item.Id" class="btn btn-warning">
-                            <span class="oi oi-dollar"></span>
-                        </a>
-                        <a href="/items/edit/@item.Id" class="btn btn-warning">
-                            <span class="oi oi-pencil"></span>
-                        </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete (item.Id))">
-                            <span class="oi oi-delete"></span>
-                        </button>
-                    </td>
-                </tr>
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Condition.Name</td>
+                <td>@item.Brand.Name</td>
+                <td>@item.Category.Name</td>
+                <td>
+                    <a href="/items/view/@item.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/items/sell/@item.Id" class="btn btn-warning">
+                        <span class="oi oi-dollar"></span>
+                    </a>
+                    <a href="/items/edit/@item.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete (item.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

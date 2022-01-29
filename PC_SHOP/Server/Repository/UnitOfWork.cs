@@ -20,6 +20,7 @@ namespace PC_SHOP.Server.Repository
         private readonly ApplicationDbContext _context;
         private IGenericRepository<Brand> _brands;
         private IGenericRepository<Category> _categories;
+        private IGenericRepository<Condition> _conditions;
         private IGenericRepository<Item> _items;
         private IGenericRepository<ListItem> _listitems;
         private IGenericRepository<Offer> _offers;
@@ -39,6 +40,8 @@ namespace PC_SHOP.Server.Repository
             => _brands ??= new GenericRepository<Brand>(_context);
         public IGenericRepository<Category> Categories
             => _categories ??= new GenericRepository<Category>(_context);
+        public IGenericRepository<Condition> Conditions
+            => _conditions ??= new GenericRepository<Condition>(_context);
         public IGenericRepository<Item> Items
             => _items ??= new GenericRepository<Item>(_context);
         public IGenericRepository<ListItem> ListItems

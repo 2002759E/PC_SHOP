@@ -11,6 +11,7 @@ namespace PC_SHOP.Client.Static
 
         public static readonly string BrandsEndpoint = $"{Prefix}/brands";
         public static readonly string CategoriesEndpoint = $"{Prefix}/categories";
+        public static readonly string ConditionsEndpoint = $"{Prefix}/conditions";
         public static readonly string ItemsEndpoint = $"{Prefix}/items";
         public static readonly string ListItemsEndpoint = $"{Prefix}/listitems";
         public static readonly string OffersEndpoint = $"{Prefix}/offers";

@@ -83,6 +83,23 @@ namespace PC_SHOP.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Conditions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Conditions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeviceCodes",
                 columns: table => new
                 {
@@ -107,7 +124,7 @@ namespace PC_SHOP.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -285,9 +302,9 @@ namespace PC_SHOP.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
+                    ConditionID = table.Column<int>(type: "int", nullable: false),
                     BrandID = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -309,6 +326,12 @@ namespace PC_SHOP.Server.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Items_Conditions_ConditionID",
+                        column: x => x.ConditionID,
+                        principalTable: "Conditions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -317,6 +340,7 @@ namespace PC_SHOP.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Price = table.Column<double>(type: "float", nullable: false),
                     ItemID = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -383,23 +407,23 @@ namespace PC_SHOP.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "ad2bcf0c-20db-474f-8407-5a6b159518ba", "5bbfa9db-9812-4b8d-a67c-0ae06d344a14", "Administrator", "ADMINISTRATOR" },
-                    { "bd2bcf0c-20db-474f-8407-5a6b159518bb", "62f058fc-d212-459f-a707-7de6a1b0f750", "User", "USER" }
+                    { "ad2bcf0c-20db-474f-8407-5a6b159518ba", "f3b1ea6b-3472-45f2-a4d4-f306868a0256", "Administrator", "ADMINISTRATOR" },
+                    { "bd2bcf0c-20db-474f-8407-5a6b159518bb", "38ebc4c1-7355-45b0-91ff-65171d25caa6", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "cb8971f2-f22a-4b22-b405-7b0dd531259d", "admin@localhost.com", false, "Admin", "User", false, null, "ADMIN@LOCALHOST.COM", "ADMIN", "AQAAAAEAACcQAAAAEF5nWG5HAMeGK9/4peuyv8a1OOkYPXs11/ft1R4C/gwZhuItiQxbR6rMERQ2BLEodg==", null, false, "acbe7630-0e05-45ee-abf1-d85bd08e5eaa", false, "Admin" });
+                values: new object[] { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "94c41a63-9667-4319-a2ce-4f475687dba1", "admin@localhost.com", false, "Admin", "User", false, null, "ADMIN@LOCALHOST.COM", "ADMIN", "AQAAAAEAACcQAAAAEMMnv7Bl3qBC8PNgyXNfhzQjRt8zsDeiXVC3IVmDXvwVra50sf1giZ0ZJI5voxSZHw==", null, false, "363e7549-f76e-4776-8acb-26cb66c6976d", false, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Brands",
                 columns: new[] { "Id", "CreatedBy", "DateCreated", "DateUpdated", "Name", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "System", new DateTime(2022, 1, 30, 0, 45, 34, 554, DateTimeKind.Local).AddTicks(2499), new DateTime(2022, 1, 30, 0, 45, 34, 554, DateTimeKind.Local).AddTicks(2505), "HP", "System" },
-                    { 2, "System", new DateTime(2022, 1, 30, 0, 45, 34, 554, DateTimeKind.Local).AddTicks(2507), new DateTime(2022, 1, 30, 0, 45, 34, 554, DateTimeKind.Local).AddTicks(2508), "ASUS", "System" },
-                    { 3, "System", new DateTime(2022, 1, 30, 0, 45, 34, 554, DateTimeKind.Local).AddTicks(2509), new DateTime(2022, 1, 30, 0, 45, 34, 554, DateTimeKind.Local).AddTicks(2510), "AMD", "System" }
+                    { 1, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(5006), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(5010), "HP", "System" },
+                    { 2, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(5013), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(5014), "ASUS", "System" },
+                    { 3, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(5015), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(5016), "AMD", "System" }
                 });
 
             migrationBuilder.InsertData(
@@ -407,10 +431,20 @@ namespace PC_SHOP.Server.Migrations
                 columns: new[] { "Id", "CreatedBy", "DateCreated", "DateUpdated", "Name", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "System", new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7558), new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7565), "Deskstops", "System" },
-                    { 2, "System", new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7568), new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7568), "Laptops & Notebooks", "System" },
-                    { 3, "System", new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7570), new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7570), "Accessories", "System" },
-                    { 4, "System", new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7571), new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(7572), "PC PARTS", "System" }
+                    { 3, "System", new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7398), new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7399), "Accessories", "System" },
+                    { 4, "System", new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7400), new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7401), "PC PARTS", "System" },
+                    { 1, "System", new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7387), new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7393), "Deskstops", "System" },
+                    { 2, "System", new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7396), new DateTime(2022, 1, 30, 3, 53, 34, 326, DateTimeKind.Local).AddTicks(7397), "Laptops & Notebooks", "System" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Conditions",
+                columns: new[] { "Id", "CreatedBy", "DateCreated", "DateUpdated", "Name", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(32), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(38), "New", "System" },
+                    { 2, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(40), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(41), "Like New", "System" },
+                    { 3, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(42), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(43), "Used", "System" }
                 });
 
             migrationBuilder.InsertData(
@@ -418,8 +452,8 @@ namespace PC_SHOP.Server.Migrations
                 columns: new[] { "Id", "CreatedBy", "DateCreated", "DateUpdated", "Name", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "System", new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(9885), new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(9891), "Transaction", "System" },
-                    { 2, "System", new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(9893), new DateTime(2022, 1, 30, 0, 45, 34, 553, DateTimeKind.Local).AddTicks(9894), "Trade/Swap", "System" }
+                    { 1, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(2383), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(2388), "Transaction", "System" },
+                    { 2, "System", new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(2391), new DateTime(2022, 1, 30, 3, 53, 34, 327, DateTimeKind.Local).AddTicks(2391), "Trade/Swap", "System" }
                 });
 
             migrationBuilder.InsertData(
@@ -427,10 +461,10 @@ namespace PC_SHOP.Server.Migrations
                 columns: new[] { "Id", "CreatedBy", "DateCreated", "DateUpdated", "Name", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, "System", new DateTime(2022, 1, 30, 0, 45, 34, 551, DateTimeKind.Local).AddTicks(1101), new DateTime(2022, 1, 30, 0, 45, 34, 552, DateTimeKind.Local).AddTicks(6193), "Cash", "System" },
-                    { 2, "System", new DateTime(2022, 1, 30, 0, 45, 34, 552, DateTimeKind.Local).AddTicks(7252), new DateTime(2022, 1, 30, 0, 45, 34, 552, DateTimeKind.Local).AddTicks(7260), "DBS", "System" },
-                    { 3, "System", new DateTime(2022, 1, 30, 0, 45, 34, 552, DateTimeKind.Local).AddTicks(7262), new DateTime(2022, 1, 30, 0, 45, 34, 552, DateTimeKind.Local).AddTicks(7263), "POSB", "System" },
-                    { 4, "System", new DateTime(2022, 1, 30, 0, 45, 34, 552, DateTimeKind.Local).AddTicks(7264), new DateTime(2022, 1, 30, 0, 45, 34, 552, DateTimeKind.Local).AddTicks(7264), "MasterCard", "System" }
+                    { 3, "System", new DateTime(2022, 1, 30, 3, 53, 34, 325, DateTimeKind.Local).AddTicks(6563), new DateTime(2022, 1, 30, 3, 53, 34, 325, DateTimeKind.Local).AddTicks(6564), "POSB", "System" },
+                    { 1, "System", new DateTime(2022, 1, 30, 3, 53, 34, 323, DateTimeKind.Local).AddTicks(9623), new DateTime(2022, 1, 30, 3, 53, 34, 325, DateTimeKind.Local).AddTicks(5776), "Cash", "System" },
+                    { 2, "System", new DateTime(2022, 1, 30, 3, 53, 34, 325, DateTimeKind.Local).AddTicks(6557), new DateTime(2022, 1, 30, 3, 53, 34, 325, DateTimeKind.Local).AddTicks(6561), "DBS", "System" },
+                    { 4, "System", new DateTime(2022, 1, 30, 3, 53, 34, 325, DateTimeKind.Local).AddTicks(6565), new DateTime(2022, 1, 30, 3, 53, 34, 325, DateTimeKind.Local).AddTicks(6566), "MasterCard", "System" }
                 });
 
             migrationBuilder.InsertData(
@@ -497,6 +531,11 @@ namespace PC_SHOP.Server.Migrations
                 name: "IX_Items_CategoryID",
                 table: "Items",
                 column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Items_ConditionID",
+                table: "Items",
+                column: "ConditionID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ListItem_ItemID",
@@ -591,6 +630,9 @@ namespace PC_SHOP.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Conditions");
         }
     }
 }

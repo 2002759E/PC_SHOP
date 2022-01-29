@@ -23,6 +23,7 @@ namespace PC_SHOP.Server.Data
 
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Condition> Conditions { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Payment> Payments { get; set; }
@@ -37,6 +38,8 @@ namespace PC_SHOP.Server.Data
             builder.ApplyConfiguration(new PaymentSeedConfiguration());
 
             builder.ApplyConfiguration(new CategorySeedConfiguration());
+
+            builder.ApplyConfiguration(new ConditionSeedConfiguration());
 
             builder.ApplyConfiguration(new OfferSeedConfiguration());
 

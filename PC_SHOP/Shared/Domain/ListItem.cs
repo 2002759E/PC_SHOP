@@ -10,6 +10,7 @@ namespace PC_SHOP.Shared.Domain
 {
     public class ListItem : BaseDomainModel
     {
+        public double Price { get; set; }
         public int ItemID { get; set; }
         public virtual Item Item { get; set; }
         public virtual List<Request> Requests { get; set; }

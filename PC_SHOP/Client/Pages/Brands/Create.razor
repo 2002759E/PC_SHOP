@@ -6,24 +6,9 @@
 <h3 class="card-title">Create New Brands</h3>
 <hr />
 <br />
+<FormComponent ButtonText="Create Brands" brand="brand" OnValidSubmit="@CreateBrand" />
 
-<EditForm Model="@brand" OnValidSubmit="CreateBrand">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
 
-    <div class="form-group">
-        <label>Brand Name:</label>
-        <div>
-            <InputText @bind-Value="@brand.Name" class="form-control" />
-            <ValidationMessage For="@(() => brand.Name)" />
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-success btn-block">
-        Create Brand
-    </button>
-
-</EditForm>
 
 @code {
     Brand brand = new Brand();

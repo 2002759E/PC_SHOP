@@ -1,0 +1,18 @@
+﻿@page "/offers/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3>View</h3>
+
+<FormComponent offer="offer" Disabled="true" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Offer offer = new Offer();
+    protected async override Task OnParametersSetAsync()
+    {
+        offer = await
+       _client.GetFromJsonAsync<Offer>($"{Endpoints.OffersEndpoint}/{id}");
+    }
+}

@@ -6,24 +6,9 @@
 <h3 class="card-title">Create New Offers</h3>
 <hr />
 <br />
+<FormComponent ButtonText="Create Offer" offer="offer"OnValidSubmit="@CreateOffer" />
 
-<EditForm Model="@offer" OnValidSubmit="CreateOffer">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
 
-    <div class="form-group">
-        <label>Offer Name:</label>
-        <div>
-            <InputText @bind-Value="@offer.Name" class="form-control" />
-            <ValidationMessage For="@(() => offer.Name)" />
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-success btn-block">
-        Create Offer
-    </button>
-
-</EditForm>
 
 @code {
     Offer offer = new Offer();

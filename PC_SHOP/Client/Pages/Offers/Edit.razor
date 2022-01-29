@@ -1,0 +1,24 @@
+﻿@page "/offers/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit Offer </h3>
+<FormComponent ButtonText="Update" OnValidSubmit="EditOffer" offer="offer" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Offer offer = new Offer();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        offer = await
+        _client.GetFromJsonAsync<Offer>($"{Endpoints.OffersEndpoint}/{id}");
+    }
+
+    async Task EditOffer()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.OffersEndpoint}/{id}",offer);
+        _navManager.NavigateTo("/offers/");
+    }
+
+}

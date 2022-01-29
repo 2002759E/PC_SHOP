@@ -10,8 +10,8 @@ using PC_SHOP.Server.Data;
 namespace PC_SHOP.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220128080318_newdb")]
-    partial class newdb
+    [Migration("20220129073327_newDb")]
+    partial class newDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -149,6 +149,22 @@ namespace PC_SHOP.Server.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "ad2bcf0c-20db-474f-8407-5a6b159518ba",
+                            ConcurrencyStamp = "b7426a57-32fc-4d17-92b7-2f3b88bf3059",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
+                        },
+                        new
+                        {
+                            Id = "bd2bcf0c-20db-474f-8407-5a6b159518bb",
+                            ConcurrencyStamp = "1bcb94d2-bdcf-477e-86fd-ed36d4bf7d52",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -236,6 +252,13 @@ namespace PC_SHOP.Server.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "3781efa7-66dc-47f0-860f-e506d04102e4",
+                            RoleId = "ad2bcf0c-20db-474f-8407-5a6b159518ba"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -328,6 +351,26 @@ namespace PC_SHOP.Server.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1fbab3d3-5e92-4d6d-869d-1495b34d9b2f",
+                            Email = "admin@localhost.com",
+                            EmailConfirmed = false,
+                            FirstName = "Admin",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEA4tdlC0xuT4pLCfpXhugsVmvV4lqbqyS7zyfJyBOaxcDjW4/fLSdPP4muz9k8TlHQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "eb896f37-8ef8-42c1-9d19-3559402cbe16",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("PC_SHOP.Shared.Domain.Brand", b =>
@@ -355,6 +398,35 @@ namespace PC_SHOP.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Brands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 608, DateTimeKind.Local).AddTicks(2083),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 608, DateTimeKind.Local).AddTicks(2094),
+                            Name = "HP",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 608, DateTimeKind.Local).AddTicks(2098),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 608, DateTimeKind.Local).AddTicks(2099),
+                            Name = "ASUS",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 608, DateTimeKind.Local).AddTicks(2100),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 608, DateTimeKind.Local).AddTicks(2101),
+                            Name = "AMD",
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("PC_SHOP.Shared.Domain.Category", b =>
@@ -382,6 +454,44 @@ namespace PC_SHOP.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1836),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1856),
+                            Name = "Deskstops",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1859),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1860),
+                            Name = "Laptops & Notebooks",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1861),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1862),
+                            Name = "Accessories",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1863),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(1864),
+                            Name = "PC PARTS",
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("PC_SHOP.Shared.Domain.Item", b =>
@@ -481,6 +591,26 @@ namespace PC_SHOP.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Offers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(4817),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(4823),
+                            Name = "Transaction",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(4829),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 607, DateTimeKind.Local).AddTicks(4830),
+                            Name = "Trade/Swap",
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("PC_SHOP.Shared.Domain.Payment", b =>
@@ -508,6 +638,44 @@ namespace PC_SHOP.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Payments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 604, DateTimeKind.Local).AddTicks(9879),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 605, DateTimeKind.Local).AddTicks(8382),
+                            Name = "Cash",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 605, DateTimeKind.Local).AddTicks(9203),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 605, DateTimeKind.Local).AddTicks(9208),
+                            Name = "DBS",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 605, DateTimeKind.Local).AddTicks(9210),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 605, DateTimeKind.Local).AddTicks(9211),
+                            Name = "POSB",
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2022, 1, 29, 15, 33, 26, 605, DateTimeKind.Local).AddTicks(9212),
+                            DateUpdated = new DateTime(2022, 1, 29, 15, 33, 26, 605, DateTimeKind.Local).AddTicks(9213),
+                            Name = "MasterCard",
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("PC_SHOP.Shared.Domain.Request", b =>

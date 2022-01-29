@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Reviews\" />
-    <Folder Include="Pages\Payment\" />
   </ItemGroup>
 
 </Project>

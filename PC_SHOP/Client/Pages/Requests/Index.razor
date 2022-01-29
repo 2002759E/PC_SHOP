@@ -25,6 +25,7 @@ else
         <thead>
             <tr>
                 <th>Item Requested</th>
+                <th>Item Price($)</th>
                 <th>Offer</th>
                 <th>Payment</th>
                 <th>Item For Trade</th>
@@ -48,6 +49,7 @@ else
                                     if (@request.ListItem.ItemID == item.Id)
                                     {
                                         <td>@item.Name</td>
+                                        <td>@item.Price</td>
                                     }
                                 }
                             }

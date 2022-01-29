@@ -18,9 +18,8 @@
                 {
                     foreach (var item in Items)
                     {
-            <option value="@item.Id">Name: @item.Name   Price: @item.Price   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                    <option value="@item.Id">Name: @item.Name   Price: @item.Price   Brand: @item.Brand.Name   Category: @item.Category.Name</option>}
                     }
-                }
             </InputSelect>
             <ValidationMessage For="@(() => listitem.ItemID)" />
         </div>

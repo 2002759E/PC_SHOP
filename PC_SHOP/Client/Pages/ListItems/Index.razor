@@ -5,6 +5,14 @@
 
 <h3>Listed Items</h3>
 
+<br />
+<a href="/listitems/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    List New Item
+</a>
+<br />
+<br />
+
 @if (ListItems == null)
 {
 
@@ -27,24 +35,42 @@ else
         <tbody>
             @foreach (var listitem in ListItems)
             {
-                <tr>
-                    <td>@listitem.Item.Name</td>
-                    <td>@listitem.Item.Description</td>
-                    <td>@listitem.Item.Price</td>
-                    <td>@listitem.Item.Category.Name</td>
-                    <td>@listitem.Item.Brand.Name</td>
-                    <td>
-                        <a href="/listitems/view/@listitem.Item.Id" class="btn btn-primary">
-                            <span class="oi oi-book"></span>
-                        </a>
-                        <a href="/listitems/edit/@listitem.Item.Id" class="btn btn-warning">
-                            <span class="oi oi-pencil"></span>
-                        </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete (listitem.Item.Id))">
-                            <span class="oi oi-delete"></span>
-                        </button>
-                    </td>
-                </tr>
+            <tr>
+                <td>@listitem.Item.Name</td>
+                <td>@listitem.Item.Description</td>
+                <td>@listitem.Item.Price</td>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
+                        {
+                            <td>@item.Category.Name</td>
+                        }
+                    }
+                }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
+                        {
+                            <td>@item.Brand.Name</td>
+                        }
+                    }
+                }
+                <td>
+                    <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/listitems/edit/@listitem.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete (listitem.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -54,10 +80,12 @@ else
 @code {
 
     private List<ListItem> ListItems;
+    private IList<Item> Items;
 
     protected async override Task OnInitializedAsync()
     {
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
     }
 
     async Task Delete(int listitemId)
@@ -66,7 +94,7 @@ else
         var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {listitem.Item.Name}?");
         if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.ItemsEndpoint}/{listitemId}");
+            await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listitemId}");
             await OnInitializedAsync();
 
         }

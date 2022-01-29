@@ -13,9 +13,9 @@ namespace PC_SHOP.Shared.Domain
         public virtual Offer Offer { get; set; }
         public int? PaymentID { get; set; }
         public virtual Payment Payment { get; set; }
-        public int ItemID { get; set; }
+        public int? ItemID { get; set; }
         public virtual Item Item { get; set; }
-        public int? ListItemID { get; set; }
+        public int ListItemID { get; set; }
         public virtual ListItem ListItem { get; set; }
         
     }

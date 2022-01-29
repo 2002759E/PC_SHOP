@@ -5,6 +5,14 @@
 
 <h3>Requests</h3>
 
+<br />
+<a href="/requests/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    List New Request
+</a>
+<br />
+<br />
+
 @if (Requests == null)
 {
 
@@ -27,10 +35,36 @@ else
             @foreach (var request in Requests)
             {
             <tr>
-                <td>@request.Item.Name</td>
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@request.ListItemID == listItem.Id)
+                        {
+                            @if (Items != null)
+                            {
+                                foreach (var item in Items)
+                                {
+                                    if (@request.ListItem.ItemID == item.Id)
+                                    {
+                                        <td>@item.Name</td>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 <td>@request.Offer.Name</td>
-                <td>@request.Payment.Name</td>
-                <td>@request.ListItem.Item.Name</td>
+                @if (@request.Offer.Name == "Transaction")
+                {
+                    <td>@request.Payment.Name</td>
+                    <td>NIL</td>
+                }
+                @if (@request.Offer.Name == "Trade/Swap")
+                {
+                    <td>NIL</td>
+                    <td>@request.Item.Name</td>
+                }
                 <td>
                     <a href="/requests/view/@request.Id" class="btn btn-primary">
                         <span class="oi oi-book"></span>
@@ -52,10 +86,14 @@ else
 @code {
 
     private List<Request> Requests;
+    private IList<ListItem> ListItems;
+    private IList<Item> Items;
 
     protected async override Task OnInitializedAsync()
     {
         Requests = await _client.GetFromJsonAsync<List<Request>>($"{Endpoints.RequestsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
     }
 
     async Task Delete(int requestId)
@@ -64,7 +102,7 @@ else
         var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {request.Payment}?");
         if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.ItemsEndpoint}/{requestId}");
+            await _client.DeleteAsync($"{Endpoints.RequestsEndpoint}/{requestId}");
             await OnInitializedAsync();
 
         }

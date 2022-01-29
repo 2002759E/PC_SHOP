@@ -12,6 +12,7 @@ using PC_SHOP.Server.IRepository;
 using PC_SHOP.Server.Models;
 using PC_SHOP.Server.Repository;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace PC_SHOP.Server
 {
@@ -28,6 +29,7 @@ namespace PC_SHOP.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -45,7 +47,7 @@ namespace PC_SHOP.Server
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson(op =>op.SerializerSettings.ReferenceLoopHandling =Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddRazorPages();
         }
 

@@ -1,0 +1,49 @@
+﻿@page "/listitems/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Listed Items for Swap/Sell</h3>
+<hr />
+<br />
+
+<EditForm Model="@listitem" OnValidSubmit="CreateListItem">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Item:</label>
+        <div>
+            <InputSelect @bind-Value="listitem.ItemID" class="form-control">
+                <option value="">--Select Item--</option>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+            <option value="@item.Id">Name: @item.Name   Price: @item.Price   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => listitem.ItemID)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-block">
+        List Item
+    </button>
+</EditForm>
+
+@code {
+    ListItem listitem = new ListItem();
+
+    private IList<Item> Items;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+    }
+
+    private async Task CreateListItem()
+    {
+        await _client.PostAsJsonAsync(Endpoints.ListItemsEndpoint, listitem);
+        _navManager.NavigateTo("/listitems/");
+    }
+}

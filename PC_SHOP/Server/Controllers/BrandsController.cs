@@ -95,8 +95,8 @@ namespace PC_SHOP.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrand(int id)
         {
-            var Brand = await _unitOfWork.Brands.Get(q => q.Id == id);
-            if (Brand == null)
+            var brand = await _unitOfWork.Brands.Get(q => q.Id == id);
+            if (brand == null)
             {
                 return NotFound();
             }

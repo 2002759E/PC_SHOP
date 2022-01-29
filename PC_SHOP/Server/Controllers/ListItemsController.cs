@@ -13,7 +13,7 @@ namespace PC_SHOP.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ListItemsController : ControllerBase
+    public class ListItemsController : Controller
     {
 
         private readonly IUnitOfWork _unitOfWork;
@@ -29,8 +29,8 @@ namespace PC_SHOP.Server.Controllers
 
         public async Task<IActionResult> GetListItems()
         {
-            var ListItems = await _unitOfWork.ListItems.GetAll(includes: q => q.Include(x => x.Item)); ;
-            return Ok(ListItems);
+            var listitems = await _unitOfWork.ListItems.GetAll(includes: q => q.Include(x => x.Item)); ;
+            return Ok(listitems);
         }
 
         // GET: api/ListItems/5

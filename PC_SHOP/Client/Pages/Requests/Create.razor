@@ -1,0 +1,129 @@
+﻿@page "/requests/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create Requests</h3>
+<hr />
+<br />
+
+<EditForm Model="@request" OnValidSubmit="CreateRequest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Requested Item:</label>
+        <div>
+            <InputSelect @bind-Value="request.ListItemID" class="form-control">
+                <option value="">--Select Item --</option>
+                @if (Payments != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+
+                        @if (Items != null)
+                        {
+                            foreach (var item in Items)
+                            {
+                                if (listItem.ItemID == item.Id)
+                                {
+                                <option value="@listItem.Id">Name: @item.Name   Price: @item.Price   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                }
+                            }
+                        }
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => request.ListItemID)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Offer Type:</label>
+        <div>
+            <InputSelect @bind-Value="request.OfferID" class="form-control">
+                <option value="">--Select Offer Type --</option>
+                @if (Offers != null)
+                {
+                    foreach (var offer in Offers)
+                    {
+                        <option value="@offer.Id">@offer.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => request.OfferID)" />
+        </div>
+    </div>
+    @if (Offers != null)
+    {
+        foreach (var offer in Offers)
+        {
+            if (@offer.Id == request.OfferID)
+            {
+                if (@offer.Name == "Transaction")
+                {
+                <div class="form-group">
+                    <label>Payment Method:</label>
+                    <div>
+                        <InputSelect @bind-Value="request.PaymentID" class="form-control">
+                            <option value="">--Payment Method--</option>
+                            @if (Payments != null)
+                                            {
+                                                foreach (var payment in Payments)
+                                                {
+                                    <option value="@payment.Id">@payment.Name</option>
+                                                }
+                                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => request.PaymentID)" />
+                    </div>
+                </div>
+
+                }
+                if (@offer.Name == "Trade/Swap")
+                {
+                <div class="form-group">
+                    <label>Item for trade:</label>
+                    <div>
+                        <InputSelect @bind-Value="request.ItemID" class="form-control">
+                            <option value="">--Select Item --</option>
+                            @if (Items != null)
+                                            {
+                                                foreach (var item in Items)
+                                                {
+                                                    <option value="@item.Id">Name: @item.Name   Price: @item.Price   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                                }
+                                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => request.ItemID)" />
+                    </div>
+                </div>
+
+                }
+            }
+        }
+    }
+    <button type="submit" class="btn btn-success btn-block">
+        Create Request
+    </button>
+</EditForm>
+
+@code {
+    Request request = new Request();
+
+    private IList<Item> Items;
+    private IList<Offer> Offers;
+    private IList<Payment> Payments;
+    private IList<ListItem> ListItems;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+        Offers = await _client.GetFromJsonAsync<List<Offer>>($"{Endpoints.OffersEndpoint}");
+        Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+    }
+
+    private async Task CreateRequest()
+    {
+        await _client.PostAsJsonAsync(Endpoints.RequestsEndpoint, request);
+        _navManager.NavigateTo("/requests/");
+    }
+}

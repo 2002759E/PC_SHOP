@@ -34,13 +34,13 @@ else
                 <td>@item.Category.Name</td>
                 <td>@item.Brand.Name</td>
                 <td>
-                    <a href="/vehicles/view/@item.Id" class="btn btn-primary">
+                    <a href="/items/view/@item.Id" class="btn btn-primary">
                         <span class="oi oi-book"></span>
                     </a>
-                    <a href="/vehicles/sell/@item.Id" class="btn btn-warning">
+                    <a href="/items/sell/@item.Id" class="btn btn-warning">
                         <span class="oi oi-dollar"></span>
                     </a>
-                    <a href="/vehicles/edit/@item.Id" class="btn btn-warning">
+                    <a href="/items/edit/@item.Id" class="btn btn-warning">
                         <span class="oi oi-pencil"></span>
                     </a>
                     <button class="btn btn-danger" @onclick="@(()=>Delete (item.Id))">

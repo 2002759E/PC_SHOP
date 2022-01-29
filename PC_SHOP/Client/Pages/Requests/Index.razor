@@ -32,10 +32,10 @@ else
                 <td>@request.Payment.Name</td>
                 <td>@request.ListItem.Item.Name</td>
                 <td>
-                    <a href="/vehicles/view/@request.Id" class="btn btn-primary">
+                    <a href="/requests/view/@request.Id" class="btn btn-primary">
                         <span class="oi oi-book"></span>
                     </a>
-                    <a href="/vehicles/edit/@request.Id" class="btn btn-warning">
+                    <a href="/requests/edit/@request.Id" class="btn btn-warning">
                         <span class="oi oi-pencil"></span>
                     </a>
                     <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">

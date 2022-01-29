@@ -34,10 +34,10 @@ else
                     <td>@listitem.Item.Category.Name</td>
                     <td>@listitem.Item.Brand.Name</td>
                     <td>
-                        <a href="/vehicles/view/@listitem.Item.Id" class="btn btn-primary">
+                        <a href="/listitems/view/@listitem.Item.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
-                        <a href="/vehicles/edit/@listitem.Item.Id" class="btn btn-warning">
+                        <a href="/listitems/edit/@listitem.Item.Id" class="btn btn-warning">
                             <span class="oi oi-pencil"></span>
                         </a>
                         <button class="btn btn-danger" @onclick="@(()=>Delete (listitem.Item.Id))">

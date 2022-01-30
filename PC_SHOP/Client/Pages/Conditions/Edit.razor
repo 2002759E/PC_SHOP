@@ -1,0 +1,24 @@
+﻿@page "/conditions/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit Condition </h3>
+<FormComponent ButtonText="Update" OnValidSubmit="EditCondition" condition="condition" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Condition condition = new Condition();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        condition = await
+        _client.GetFromJsonAsync<Condition>($"{Endpoints.ConditionsEndpoint}/{id}");
+    }
+
+    async Task EditCondition()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ConditionsEndpoint}/{id}", condition);
+        _navManager.NavigateTo("/conditions/");
+    }
+
+}

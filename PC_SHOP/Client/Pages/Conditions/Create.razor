@@ -1,0 +1,22 @@
+﻿@page "/conditions/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3 class="card-title">Create New Condition</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Conditions" condition="condition" OnValidSubmit="@CreateCondition" />
+
+
+
+@code {
+    Condition condition = new Condition();
+
+    private async Task CreateCondition()
+    {
+        await _client.PostAsJsonAsync(Endpoints.ConditionsEndpoint, condition);
+        _navManager.NavigateTo("/conditions/");
+    }
+}

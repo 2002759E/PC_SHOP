@@ -1,4 +1,5 @@
 ﻿@inject HttpClient _client
+@inject NavigationManager _navManager
 
 <EditForm Model="@listitem" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
@@ -13,15 +14,25 @@
     <button type="submit" class="btn btn-success btn-block">
         @ButtonText
     </button>
+    <button class="btn btn-success btn-block" @onclick="@(() => goitem(@listitem.ItemID))">
+        Edit Item
+    </button>
+    <BackToList Target="listitems" />
 </EditForm>
 
 @code {
 
     [Parameter] public ListItem listitem { get; set; }
+    [Parameter] public int id { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
     private IList<Item> Items;
+
+    private void goitem(int id2)
+    {
+        _navManager.NavigateTo("/listitems/edititem/" + id2);
+    }
 
     protected async override Task OnInitializedAsync()
     {

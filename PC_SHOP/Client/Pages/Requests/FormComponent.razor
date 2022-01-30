@@ -1,6 +1,117 @@
-﻿@inject HttpClient _client<EditForm Model="@request" OnValidSubmit="@OnValidSubmit">    <DataAnnotationsValidator />    <ValidationSummary />    <div class="form-group">        <label>Requested Item:</label>        <div>            <InputSelect @bind-Value="request.ListItemID" class="form-control">                <option value="">--Select Item --</option>                @if (ListItems != null)                {                    foreach (var listItem in ListItems)                    {                        @if (Items != null)                        {                            foreach (var item in Items)                            {                                if (listItem.ItemID == item.Id)                                {                                    <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>                                }                            }                        }                    }                }            </InputSelect>            <ValidationMessage For="@(() => request.ListItemID)" />        </div>    </div>    <div class="form-group">        <label>Offer Type:</label>        <div>            <InputSelect @bind-Value="request.OfferID" class="form-control">                <option value="">--Select Offer Type --</option>                @if (Offers != null)                {                    foreach (var offer in Offers)                    {                        <option value="@offer.Id">@offer.Name</option>                    }                }            </InputSelect>            <ValidationMessage For="@(() => request.OfferID)" />        </div>    </div>    @if (Offers != null)    {        foreach (var offer in Offers)        {            if (@offer.Id == request.OfferID)            {                if (@offer.Name == "Transaction")                {                    <div class="form-group">                        <label>Payment Method:</label>                        <div>                            <InputSelect @bind-Value="request.PaymentID" class="form-control">                                <option value="">--Payment Method--</option>                                @if (Payments != null)                                                {                                                    foreach (var payment in Payments)                                                    {                                        <option value="@payment.Id">@payment.Name</option>                                                    }                                                }                            </InputSelect>                            <ValidationMessage For="@(() => request.PaymentID)" />                        </div>                    </div>                }                if (@offer.Name == "Trade/Swap")                {                    <div class="form-group">                        <label>Item for trade:</label>                        <div>                            <InputSelect @bind-Value="request.ItemID" class="form-control">                                <option value="">--Select Item --</option>                                @if (Items != null)                                                {                                                    foreach (var item in Items)                                                    {                            <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>                                                    }                                                }                            </InputSelect>                            <ValidationMessage For="@(() => request.ItemID)" />                        </div>                    </div>                }            }        }    }    <button type="submit" class="btn btn-success btn-block">        @ButtonText    </button></EditForm>@code {
+﻿@inject HttpClient _client
 
-    [Parameter] public Request request { get; set; }    [Parameter] public string ButtonText { get; set; } = "Save";    [Parameter] public EventCallback OnValidSubmit { get; set; }
+<EditForm Model="@request" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Requested Item:</label>
+            <div>
+                <InputSelect @bind-Value="request.ListItemID" class="form-control">
+                    <option value="">--Select Item --</option>
+                    @if (ListItems != null)
+                    {
+                        foreach (var listItem in ListItems)
+                        {
+
+                            @if (Items != null)
+                            {
+                                foreach (var item in Items)
+                                {
+                                    if (listItem.ItemID == item.Id)
+                                    {
+                                        <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => request.ListItemID)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Offer Type:</label>
+            <div>
+                <InputSelect @bind-Value="request.OfferID" class="form-control">
+                    <option value="">--Select Offer Type --</option>
+                    @if (Offers != null)
+                    {
+                        foreach (var offer in Offers)
+                        {
+                            <option value="@offer.Id">@offer.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => request.OfferID)" />
+            </div>
+        </div>
+        @if (Offers != null)
+        {
+            foreach (var offer in Offers)
+            {
+                if (@offer.Id == request.OfferID)
+                {
+                    if (@offer.Name == "Transaction")
+                    {
+                        <div class="form-group">
+                            <label>Payment Method:</label>
+                            <div>
+                                <InputSelect @bind-Value="request.PaymentID" class="form-control">
+                                    <option value="">--Payment Method--</option>
+                                    @if (Payments != null)
+                                                    {
+                                                        foreach (var payment in Payments)
+                                                        {
+                                            <option value="@payment.Id">@payment.Name</option>
+                                                        }
+                                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => request.PaymentID)" />
+                            </div>
+                        </div>
+
+                    }
+                    if (@offer.Name == "Trade/Swap")
+                    {
+                        <div class="form-group">
+                            <label>Item for trade:</label>
+                            <div>
+                                <InputSelect @bind-Value="request.ItemID" class="form-control">
+                                    <option value="">--Select Item --</option>
+                                    @if (Items != null)
+                                                    {
+                                                        foreach (var item in Items)
+                                                        {
+                                            <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                                        }
+                                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => request.ItemID)" />
+                            </div>
+                        </div>
+
+                    }
+                }
+            }
+        }
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+    <BackToList Target="requests" />
+
+</EditForm>
+
+@code {
+
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Request request { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
 
     private IList<Item> Items;
     private IList<Offer> Offers;
@@ -13,4 +124,6 @@
         Offers = await _client.GetFromJsonAsync<List<Offer>>($"{Endpoints.OffersEndpoint}");
         Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
-    }}
+    }
+
+}

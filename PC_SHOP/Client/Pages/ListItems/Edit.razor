@@ -4,7 +4,7 @@
 
 <h3>Edit</h3>
 
-<FormComponent ButtonText="Update" OnValidSubmit="EditItem" item="item" />
+<FormComponent ButtonText="Update" OnValidSubmit="EditItem" item="item" id="id" />
 
 @code {
 
@@ -20,6 +20,5 @@
     async Task EditItem()
     {
         await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{id}", item);
-        _navManager.NavigateTo("/listitems/");
     }
 }

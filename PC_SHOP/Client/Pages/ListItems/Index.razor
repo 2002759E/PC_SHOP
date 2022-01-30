@@ -36,74 +36,63 @@ else
         <tbody>
             @foreach (var listitem in ListItems)
             {
-            <tr>
-                <td>@listitem.Item.Name</td>
-                <td>@listitem.Item.Description</td>
-                <td>@listitem.Price</td>
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
-                    {
-                        if (@listitem.ItemID == item.Id)
-                        {
-                            <td>@item.Condition.Name</td>
-                        }
-                    }
-                }
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
-                    {
-                        if (@listitem.ItemID == item.Id)
-                        {
-                            <td>@item.Brand.Name</td>
-                        }
-                    }
-                }
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
-                    {
-                        if (@listitem.ItemID == item.Id)
-                        {
-                            <td>@item.Category.Name</td>
-                        }
-                    }
-                }
-                <td>
-                    <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
-                        <span class="oi oi-dollar"></span>
-                    </a>
+                <tr>
+                    <td>@listitem.Item.Name</td>
+                    <td>@listitem.Item.Description</td>
+                    <td>@listitem.Price</td>
                     @if (Items != null)
                     {
                         foreach (var item in Items)
                         {
                             if (@listitem.ItemID == item.Id)
                             {
-                                <a href="/listitems/edititem/@item.Id" class="btn btn-warning">
-                                    <span class="oi oi-pencil"></span>
-                                </a>
+                                <td>@item.Condition.Name</td>
                             }
                         }
                     }
-                    <button class="btn btn-danger" @onclick="@(()=>Delete (listitem.Id))">
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Brand.Name</td>
+                            }
+                        }
+                    }
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Category.Name</td>
+                            }
+                        }
+                    }
+                <td>
+                    
+                    <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
                         <span class="oi oi-delete"></span>
                     </button>
                 </td>
-            </tr>
+                </tr>
             }
         </tbody>
     </table>
-
-}
+}   
 
 @code {
 
     private List<ListItem> ListItems;
     private IList<Item> Items;
+
 
     protected async override Task OnInitializedAsync()
     {

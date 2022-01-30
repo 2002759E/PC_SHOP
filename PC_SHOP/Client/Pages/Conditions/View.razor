@@ -1,0 +1,16 @@
+﻿@page "/conditions/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View</h3>
+
+<FormComponent condition="condition" Disabled="true" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Condition condition = new Condition();
+    protected async override Task OnParametersSetAsync()
+    {
+        condition = await _client.GetFromJsonAsync<Condition>($"{Endpoints.ConditionsEndpoint}/{id}");
+    }
+}

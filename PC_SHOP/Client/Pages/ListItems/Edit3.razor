@@ -1,0 +1,164 @@
+﻿@page "/listitems/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View</h3>
+
+<EditForm Model="@listitem" OnValidSubmit="EditListItem">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Name:</label>
+        <div>
+            @if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    if (@listitem.ItemID == @item.Id)
+                    {
+                        <InputText @bind-Value="@item.Name" class="form-control" />
+                        <ValidationMessage For="@(() => item.Name)" />
+                    }
+                }
+
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Price:</label>
+        <div>
+            <InputNumber @bind-Value="@listitem.Price" class="form-control" />
+            <ValidationMessage For="@(() => listitem.Price)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Description:</label>
+        <div>
+            @if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    if (@listitem.ItemID == @item.Id)
+                    {
+                        <InputText @bind-Value="@item.Description" class="form-control" />
+                        <ValidationMessage For="@(() => item.Description)" />
+                    }
+                }
+
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Condition:</label>
+        <div>
+            @if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    if (@listitem.ItemID == @item.Id)
+                    {
+                        <InputSelect @bind-Value="@item.ConditionID" class="form-control">
+                            <option value="">--Select Brand--</option>
+                            @if (Conditions != null)
+                                        {
+                                            foreach (var condition in Conditions)
+                                            {
+                                    <option value="@condition.Id">@condition.Name</option>
+                                            }
+                                        }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => @item.ConditionID)" />
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Brand:</label>
+        <div>
+            @if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    if (@listitem.ItemID == @item.Id)
+                    {
+                        <InputSelect @bind-Value="@item.BrandID" class="form-control">
+                            <option value="">--Select Brand--</option>
+                            @if (Brands != null)
+                                        {
+                                            foreach (var brand in Brands)
+                                            {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                            }
+                                        }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => @item.BrandID)" />
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Category:</label>
+        <div>
+            @if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    if (@listitem.ItemID == @item.Id)
+                    {
+                        <InputSelect @bind-Value="@item.CategoryID" class="form-control">
+                            <option value="">--Select Brand--</option>
+                            @if (Categories != null)
+                                        {
+                                            foreach (var category in Categories)
+                                            {
+                                    <option value="@category.Id">@category.Name</option>
+                                            }
+                                        }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => @item.CategoryID)" />
+                    }
+                }
+            }
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        Edit Listed Item
+    </button>
+</EditForm>
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    ListItem listitem = new ListItem();
+    Item item = new Item();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        listitem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{id}");
+        item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{id}");
+    }
+
+    private IList<Item> Items;
+    private IList<Category> Categories;
+    private IList<Brand> Brands;
+    private IList<Condition> Conditions;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+        Brands = await _client.GetFromJsonAsync<List<Brand>>($"{Endpoints.BrandsEndpoint}");
+        Conditions = await _client.GetFromJsonAsync<List<Condition>>($"{Endpoints.ConditionsEndpoint}");
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+    }
+
+    async Task EditListItem()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{id}", item);
+        await _client.PutAsJsonAsync($"{Endpoints.ListItemsEndpoint}/{id}", listitem);
+        _navManager.NavigateTo("/listitems/");
+    }
+
+
+}

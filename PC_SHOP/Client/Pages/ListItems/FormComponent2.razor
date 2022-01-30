@@ -5,7 +5,7 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
-        <label>Price:</label>
+        <label>Price($):</label>
         <div>
             <InputNumber @bind-Value="@listitem.Price" class="form-control" />
             <ValidationMessage For="@(() => listitem.Price)" />
@@ -14,7 +14,7 @@
     <button type="submit" class="btn btn-success btn-block">
         @ButtonText
     </button>
-    <button class="btn btn-success btn-block" @onclick="@(() => goitem(@listitem.ItemID))">
+    <button class="btn btn-success btn-block" @onclick="@(() => goitem(@listitem.Item.Id))">
         Edit Item
     </button>
     <BackToList Target="listitems" />

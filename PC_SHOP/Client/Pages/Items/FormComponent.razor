@@ -22,12 +22,13 @@
             <label>Condition:</label>
             <div>
                 <InputSelect @bind-Value="item.ConditionID" class="form-control">
-                    <option value="">--Select Brand--</option>
+                    <option value="">--Select Condition--</option>
                     @if (Conditions != null)
                     {
                         foreach (var condition in Conditions)
                         {
-                            <option value="@condition.Id">@condition.Name</option>}
+                            <option value="@condition.Id">@condition.Name</option>
+                        }
                     }
                 </InputSelect>
                 <ValidationMessage For="@(() => item.ConditionID)" />
@@ -42,7 +43,8 @@
                     {
                         foreach (var brand in Brands)
                         {
-                            <option value="@brand.Id">@brand.Name</option>}
+                        <option value="@brand.Id">@brand.Name</option>
+                        }
                     }
                 </InputSelect>
                 <ValidationMessage For="@(() => item.BrandID)" />

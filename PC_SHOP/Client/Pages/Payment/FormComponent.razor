@@ -2,6 +2,9 @@
 
 <h3>FormComponent</h3>
 
+
+
+
 <EditForm Model="@payment" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -20,9 +23,9 @@
             Create Payment
         </button>
     }
+    <BackToList Target="payments" />
 
-
-    </EditForm>
+</EditForm>
 
 
 @code {

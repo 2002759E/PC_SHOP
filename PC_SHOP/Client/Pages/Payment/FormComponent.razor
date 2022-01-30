@@ -5,7 +5,7 @@
 <EditForm Model="@payment" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    
+    <fieldset disabled="@Disabled">
         <div class="form-group">
             <label>Payment Method:</label>
             <div>
@@ -13,17 +13,20 @@
                 <ValidationMessage For="@(() => payment.Name)" />
             </div>
         </div>
+    </fieldset>
+    @if (!Disabled)
+    {
         <button type="submit" class="btn btn-success btn-block">
             Create Payment
         </button>
-    
-    
+    }
 
-</EditForm>
+
+    </EditForm>
 
 
 @code {
-    
+    [Parameter] public bool Disabled { get; set; } = false;
     [Parameter] public Payment payment { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
     [Parameter] public EventCallback OnValidSubmit { get; set; }

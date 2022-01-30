@@ -2,6 +2,8 @@
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
+@implements IDisposable
+
 
 <h3>Item Inventory</h3>
 
@@ -21,7 +23,7 @@
 }
 else
 {
-    <table class="table table-responsive">
+    <table class="table table-responsive" id="itemsTable">
         <thead>
             <tr>
                 <th>Name</th>
@@ -35,27 +37,27 @@ else
         <tbody>
             @foreach (var item in Items)
             {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-                <td>@item.Condition.Name</td>
-                <td>@item.Brand.Name</td>
-                <td>@item.Category.Name</td>
-                <td>
-                    <a href="/items/view/@item.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/items/sell/@item.Id" class="btn btn-warning">
-                        <span class="oi oi-dollar"></span>
-                    </a>
-                    <a href="/items/edit/@item.Id" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(()=>Delete (item.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
-            </tr>
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td>@item.Condition.Name</td>
+                    <td>@item.Brand.Name</td>
+                    <td>@item.Category.Name</td>
+                    <td>
+                        <a href="/items/view/@item.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/items/sell/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-dollar"></span>
+                        </a>
+                        <a href="/items/edit/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (item.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -81,6 +83,17 @@ else
             await OnInitializedAsync();
 
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#itemsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#itemsTable");
     }
 
 }

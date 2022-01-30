@@ -2,6 +2,7 @@
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
+@implements IDisposable
 
 <h3>Listed Items</h3>
 
@@ -21,7 +22,7 @@
 }
 else
 {
-    <table class="table table-responsive">
+    <table class="table table-responsive" id="listItemsTable">
         <thead>
             <tr>
                 <th>Name</th>
@@ -70,23 +71,23 @@ else
                             }
                         }
                     }
-                <td>
-                    
-                    <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
+                    <td>
+
+                        <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
-}   
+}
 
 @code {
 
@@ -110,6 +111,17 @@ else
             await OnInitializedAsync();
 
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#listItemsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#listItemsTable");
     }
 
 }

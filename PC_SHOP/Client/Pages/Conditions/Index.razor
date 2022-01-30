@@ -2,6 +2,7 @@
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
+@implements IDisposable
 
 <h3>Conditions</h3>
 <a href="/Conditions/create" class="btn btn-secondary">
@@ -17,7 +18,7 @@
 }
 else
 {
-    <table class="table table-responsive">
+    <table class="table table-responsive" id="conditionsTable">
         <thead>
             <tr>
                 <th>Name</th>
@@ -66,6 +67,17 @@ else
             await OnInitializedAsync();
 
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#conditionsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#conditionsTable");
     }
 
 }

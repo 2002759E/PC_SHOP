@@ -2,6 +2,7 @@
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
+@implements IDisposable
 
 <h3>Requests</h3>
 
@@ -21,7 +22,7 @@
 }
 else
 {
-    <table class="table table-responsive">
+    <table class="table table-responsive" id="requestsTable">
         <thead>
             <tr>
                 <th>Item Requested</th>
@@ -36,60 +37,60 @@ else
         <tbody>
             @foreach (var request in Requests)
             {
-            <tr>
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
+                <tr>
+                    @if (ListItems != null)
                     {
-                        if (@request.ListItemID == listItem.Id)
+                        foreach (var listItem in ListItems)
                         {
-                            @if (Items != null)
+                            if (@request.ListItemID == listItem.Id)
                             {
-                                foreach (var item in Items)
+                                @if (Items != null)
                                 {
-                                    if (@request.ListItem.ItemID == item.Id)
+                                    foreach (var item in Items)
                                     {
-                                        <td>@item.Name</td>
-                                        <td>@item.Condition.Name</td>
+                                        if (@request.ListItem.ItemID == item.Id)
+                                        {
+                                            <td>@item.Name</td>
+                                            <td>@item.Condition.Name</td>
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
+                    @if (ListItems != null)
                     {
-                        if (@request.ListItemID == listItem.Id)
+                        foreach (var listItem in ListItems)
                         {
-                            <td>@listItem.Price</td>
+                            if (@request.ListItemID == listItem.Id)
+                            {
+                                <td>@listItem.Price</td>
+                            }
                         }
                     }
-                }
-                <td>@request.Offer.Name</td>
-                @if (@request.Offer.Name == "Transaction")
-                {
-                    <td>@request.Payment.Name</td>
-                    <td>NIL</td>
-                }
-                @if (@request.Offer.Name == "Trade/Swap")
-                {
-                    <td>NIL</td>
-                    <td>@request.Item.Name</td>
-                }
-                <td>
-                    <a href="/requests/view/@request.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/requests/edit/@request.Id" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
-            </tr>
+                    <td>@request.Offer.Name</td>
+                    @if (@request.Offer.Name == "Transaction")
+                    {
+                        <td>@request.Payment.Name</td>
+                        <td>NIL</td>
+                    }
+                    @if (@request.Offer.Name == "Trade/Swap")
+                    {
+                        <td>NIL</td>
+                        <td>@request.Item.Name</td>
+                    }
+                    <td>
+                        <a href="/requests/view/@request.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/requests/edit/@request.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -119,6 +120,17 @@ else
             await OnInitializedAsync();
 
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#requestsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#requestsTable");
     }
 
 }

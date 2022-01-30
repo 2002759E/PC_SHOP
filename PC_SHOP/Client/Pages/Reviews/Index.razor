@@ -2,6 +2,7 @@
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
+@implements IDisposable
 
 <h3>Reviews</h3>
 <a href="/reviews/create" class="btn btn-secondary">
@@ -20,7 +21,7 @@
 }
 else
 {
-    <table class="table table-responsive">
+    <table class="table table-responsive" id="reviewsTable">
         <thead>
             <tr>
                 <th>Ratings</th>
@@ -28,7 +29,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var review in  Reviews)
+            @foreach (var review in Reviews)
             {
                 <tr>
                     <td>@review.Rating</td>
@@ -76,5 +77,16 @@ else
             await OnInitializedAsync();
 
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#reviewsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#reviewsTable");
     }
 }

@@ -2,12 +2,13 @@
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
+@implements IDisposable
 
 
 <h3>Payment Methods</h3>
 <a href="/payments/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
-   Add Payment Method
+    Add Payment Method
 </a>
 <br />
 <br />
@@ -21,7 +22,7 @@
 }
 else
 {
-    <table class="table table-responsive">
+    <table class="table table-responsive" id="paymentsTable">
         <thead>
             <tr>
                 <th>Name</th>
@@ -76,5 +77,16 @@ else
             await OnInitializedAsync();
 
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#paymentsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#paymentsTable");
     }
 }

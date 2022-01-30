@@ -6,6 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Pages\Payment\Create.razor" />
+    <None Include="Pages\Payment\Edit.razor" />
+    <None Include="Pages\Payment\FormComponent.razor" />
+    <None Include="Pages\Payment\Index.razor" />
+    <None Include="Pages\Payment\View.razor" />
+    <None Include="Pages\Reviews\Create.razor" />
+    <None Include="Pages\Reviews\Edit.razor" />
+    <None Include="Pages\Reviews\FormComponent.razor" />
+    <None Include="Pages\Reviews\Index.razor" />
+    <None Include="Pages\Reviews\View.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.12" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.12" />
@@ -19,11 +32,6 @@
 
   <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\Reviews\" />
-    <Folder Include="Pages\Payment\" />
   </ItemGroup>
 
 </Project>

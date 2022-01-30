@@ -1,0 +1,36 @@
+﻿@page "/payments/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3 class="card-title">Add Payments</h3>
+<EditForm Model="@payment" OnValidSubmit="CreatePayment">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Payment Method:</label>
+        <div>
+            <InputText @bind-Value="@payment.Name" class="form-control" />
+            <ValidationMessage For="@(() => payment.Name)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-block">
+        Add Payment
+    </button>
+
+</EditForm>
+
+
+
+
+@code {
+    Payment payment = new Payment();
+
+    private async Task CreatePayment()
+    {
+        await _client.PostAsJsonAsync(Endpoints.PaymentsEndpoint, payment);
+        _navManager.NavigateTo("/payments/");
+    }
+}

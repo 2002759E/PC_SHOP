@@ -1,0 +1,35 @@
+﻿
+<h3>FormComponent</h3>
+
+
+
+
+<EditForm Model="@payment" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Payment Method:</label>
+            <div>
+                <InputText @bind-Value="@payment.Name" class="form-control" />
+                <ValidationMessage For="@(() => payment.Name)" />
+            </div>
+        </div>
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            Update Payment
+        </button>
+    }
+    <BackToList Target="payments" />
+
+</EditForm>
+
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Payment payment { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

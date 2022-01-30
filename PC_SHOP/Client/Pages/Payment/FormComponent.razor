@@ -1,0 +1,30 @@
+﻿
+
+<h3>FormComponent</h3>
+
+<EditForm Model="@payment" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+        <div class="form-group">
+            <label>Payment Method:</label>
+            <div>
+                <InputText @bind-Value="@payment.Name" class="form-control" />
+                <ValidationMessage For="@(() => payment.Name)" />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success btn-block">
+            Create Payment
+        </button>
+    
+    
+
+</EditForm>
+
+
+@code {
+    
+    [Parameter] public Payment payment { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

@@ -3,6 +3,8 @@
 @attribute [Authorize]
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime js
+@implements IDisposable
 
 <h3>App Users</h3>
 
@@ -26,7 +28,7 @@
 }
 else
 {
-    <table class="table table‐responsive">
+    <table class="table table‐responsive" id="accountsTable">
         <thead>
             <tr>
                 <th>Account Id</th>
@@ -92,6 +94,17 @@ else
         {
             _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#accountsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#accountsTable");
     }
 
 }

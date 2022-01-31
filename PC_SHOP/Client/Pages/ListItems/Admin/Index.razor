@@ -1,4 +1,4 @@
-﻿@page "/listitems/"
+﻿@page "/adminlistitems/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
@@ -6,10 +6,10 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Listed Items</h3>
+<h3>All Listed Items</h3>
 
 <br />
-<a href="/listitems/create" class="btn btn-secondary">
+<a href="/adminlistitems/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
     List New Item
 </a>
@@ -32,63 +32,64 @@ else
                 <th>Price($)</th>
                 <th>Condition</th>
                 <th>Brand</th>
-                <th>Category</th> 
+                <th>Category</th>
+                <th>Listed By</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var listitem in ListItems)
             {
-                if (listitem.CreatedBy == @_currentUserName)
+                
+            <tr>
+                <td>@listitem.Item.Name</td>
+                <td>@listitem.Item.Description</td>
+                <td>@listitem.Price</td>
+                @if (Items != null)
                 {
-                    <tr>
-                        <td>@listitem.Item.Name</td>
-                        <td>@listitem.Item.Description</td>
-                        <td>@listitem.Price</td>
-                        @if (Items != null)
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
                         {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Condition.Name</td>
-                                }
-                            }
+                            <td>@item.Condition.Name</td>
                         }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Brand.Name</td>
-                                }
-                            }
-                        }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Category.Name</td>
-                                }
-                            }
-                        }
-                        <td>
-
-                            <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
-                                <span class="oi oi-book"></span>
-                            </a>
-                            <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
-                                <span class="oi oi-pencil"></span>
-                            </a>
-                            <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
-                                <span class="oi oi-delete"></span>
-                            </button>
-                        </td>
-                    </tr>
+                    }
                 }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
+                        {
+                            <td>@item.Brand.Name</td>
+                        }
+                    }
+                }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
+                        {
+                            <td>@item.Category.Name</td>
+                        }
+                    }
+                }
+                <td>@listitem.CreatedBy</td>
+                <td>
+
+                    <a href="/adminlistitems/view/@listitem.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/adminlistitems/editprice/@listitem.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
+                
             }
         </tbody>
     </table>

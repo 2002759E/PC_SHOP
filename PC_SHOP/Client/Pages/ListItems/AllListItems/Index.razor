@@ -1,4 +1,4 @@
-﻿@page "/listitems/"
+﻿@page "/alllistitems/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
@@ -32,14 +32,15 @@ else
                 <th>Price($)</th>
                 <th>Condition</th>
                 <th>Brand</th>
-                <th>Category</th> 
-                <th>Actions</th>
+                <th>Category</th>
+                <th>Listed by</th>
+                <th>Request</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var listitem in ListItems)
             {
-                if (listitem.CreatedBy == @_currentUserName)
+                if (listitem.CreatedBy != @_currentUserName)
                 {
                     <tr>
                         <td>@listitem.Item.Name</td>
@@ -75,17 +76,21 @@ else
                                 }
                             }
                         }
+                        @if (Items != null)
+                        {
+                            foreach (var item in Items)
+                            {
+                                if (@listitem.ItemID == item.Id)
+                                {
+                                    <td>@item.CreatedBy</td>
+                                }
+                            }
+                        }
                         <td>
 
                             <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
                             </a>
-                            <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
-                                <span class="oi oi-pencil"></span>
-                            </a>
-                            <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
-                                <span class="oi oi-delete"></span>
-                            </button>
                         </td>
                     </tr>
                 }

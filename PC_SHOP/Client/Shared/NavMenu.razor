@@ -18,65 +18,86 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="items">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Item Inventory
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="listitems">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Listed Items
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="outrequests">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Outgoing Requests
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="inrequests">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Incoming Requests
-            </NavLink>
-        </li>
-
         <AuthorizeView Roles="Administrator">
-            
+            <Authorized>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="accounts">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Accounts
+                        <span class="oi oi-list" aria-hidden="true"></span> Accounts
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="adminitems">
+                        <span class="oi oi-list" aria-hidden="true"></span> All Items
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="adminlistitems">
+                        <span class="oi oi-list" aria-hidden="true"></span> All Listed Items
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="adminrequests">
+                        <span class="oi oi-list" aria-hidden="true"></span> All Requests
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="categories">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Categories
+                        <span class="oi oi-list" aria-hidden="true"></span> Categories
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="conditions">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Conditions
+                        <span class="oi oi-list" aria-hidden="true"></span> Conditions
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="brands">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Brands
+                        <span class="oi oi-list" aria-hidden="true"></span> Brands
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="offers">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Offer Types
+                        <span class="oi oi-list" aria-hidden="true"></span> Offer Types
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="payments">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Payments
+                        <span class="oi oi-list" aria-hidden="true"></span> Payments
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="reviews">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Reviews
+                        <span class="oi oi-list" aria-hidden="true"></span> Reviews
                     </NavLink>
                 </li>
-            
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="alllistitems">
+                        <span class="oi oi-cart" aria-hidden="true"></span> Listed Items
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="items">
+                        <span class="oi oi-box" aria-hidden="true"></span> My Inventory
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="listitems">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> My Listed Items
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="outrequests">
+                        <span class="oi oi-data-transfer-upload" aria-hidden="true"></span> Outgoing Requests
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="inrequests">
+                        <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Incoming Requests
+                    </NavLink>
+                </li>
+            </NotAuthorized>
         </AuthorizeView>
 
     </ul>

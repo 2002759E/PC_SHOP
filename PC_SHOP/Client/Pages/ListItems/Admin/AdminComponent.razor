@@ -1,0 +1,118 @@
+﻿@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<EditForm Model="@item" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Name:</label>
+            <div>
+                <InputText @bind-Value="@item.Name" class="form-control" />
+                <ValidationMessage For="@(() => item.Name)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description:</label>
+            <div>
+                <InputText @bind-Value="@item.Description" class="form-control" />
+                <ValidationMessage For="@(() => item.Description)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Condition:</label>
+            <div>
+                <InputSelect @bind-Value="item.ConditionID" class="form-control">
+                    <option value="">--Select Brand--</option>
+                    @if (Conditions != null)
+                    {
+                        foreach (var condition in Conditions)
+                        {
+                            <option value="@condition.Id">@condition.Name</option>}
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => item.ConditionID)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand:</label>
+            <div>
+                <InputSelect @bind-Value="item.BrandID" class="form-control">
+                    <option value="">--Select Brand--</option>
+                    @if (Brands != null)
+                    {
+                        foreach (var brand in Brands)
+                        {
+                            <option value="@brand.Id">@brand.Name</option>}
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => item.BrandID)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Category:</label>
+            <div>
+                <InputSelect @bind-Value="item.CategoryID" class="form-control">
+                    <option value="">--Select Category--</option>
+                    @if (Categories != null)
+                    {
+                        foreach (var category in Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>}
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => item.CategoryID)" />
+            </div>
+        </div>
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+    @if (ListItems != null)
+    {
+        foreach (var listItem in ListItems)
+        {
+            if (@listItem.ItemID == id)
+            {
+                <button class="btn btn-primary btn-block" @onclick="@(() => goprice(@listItem.Id))">
+                    <span class="oi oi-arrow-left"></span>
+                    Edit Item Price
+                </button>
+            }
+        }
+    }
+    <BackToList Target="adminlistitems" />
+
+</EditForm>
+
+
+@code {
+
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Item item { get; set; }
+    [Parameter] public int id { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+
+    private void goprice(int id2)
+    {
+        _navManager.NavigateTo("/adminlistitems/editprice/" + id2);
+    }
+
+    private IList<ListItem> ListItems;
+    private IList<Category> Categories;
+    private IList<Brand> Brands;
+    private IList<Condition> Conditions;
+
+    protected async override Task OnInitializedAsync()
+    {
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+        Brands = await _client.GetFromJsonAsync<List<Brand>>($"{Endpoints.BrandsEndpoint}");
+        Conditions = await _client.GetFromJsonAsync<List<Condition>>($"{Endpoints.ConditionsEndpoint}");
+    }
+}

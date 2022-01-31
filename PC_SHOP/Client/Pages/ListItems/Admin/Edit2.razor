@@ -1,0 +1,26 @@
+﻿@page "/adminlistitems/editprice/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit</h3>
+
+<AdminComponent2 ButtonText="Update" OnValidSubmit="EditListItem" listitem="listitem" id="id" />
+
+@code {
+
+
+    [Parameter] public int id { get; set; }
+    ListItem listitem = new ListItem();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        listitem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{id}");
+
+    }
+
+    async Task EditListItem()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ListItemsEndpoint}/{id}", listitem);
+    }
+}
+

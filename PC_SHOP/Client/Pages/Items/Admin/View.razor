@@ -1,0 +1,16 @@
+﻿@page "/adminitems/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View</h3>
+
+<AdminComponent item="item" Disabled="true" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Item item = new Item();
+    protected async override Task OnParametersSetAsync()
+    {
+        item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{id}");
+    }
+}

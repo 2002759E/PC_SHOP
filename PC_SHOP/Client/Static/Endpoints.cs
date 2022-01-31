@@ -9,6 +9,7 @@ namespace PC_SHOP.Client.Static
     {
         private static readonly string Prefix = "api";
 
+        public static readonly string AccountsEndpoint = $"{Prefix}/accounts";
         public static readonly string BrandsEndpoint = $"{Prefix}/brands";
         public static readonly string CategoriesEndpoint = $"{Prefix}/categories";
         public static readonly string ConditionsEndpoint = $"{Prefix}/conditions";

@@ -12,6 +12,7 @@ using PC_SHOP.Server.Data;
 using PC_SHOP.Server.IRepository;
 using PC_SHOP.Server.Models;
 using PC_SHOP.Server.Repository;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -42,7 +43,12 @@ namespace PC_SHOP.Server
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options => {
+                    options.IdentityResources["openid"].UserClaims.Add("role");
+                    options.ApiResources.Single().UserClaims.Add("role");
+                });
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();

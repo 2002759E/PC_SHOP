@@ -1,0 +1,167 @@
+﻿@page "/inrequests/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@implements IDisposable
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<h3>Incoming Requests</h3>
+
+
+@if (Requests == null)
+{
+
+    <div class="alert alert-info">Loading Requests...</div>
+
+}
+else
+{
+    <table class="table table-responsive" id="requestsTable">
+        <thead>
+            <tr>
+                <th>Requested By</th>
+                <th>Item Requested</th>
+                <th>Item Price($)</th>
+                <th>Offer</th>
+                <th>Payment</th>
+                <th>Item For Trade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Requests)
+            {
+                if (request.ListItem.CreatedBy == @_currentUserName)
+                {
+                    <tr>
+                        <td>@request.CreatedBy</td>
+                        @if (ListItems != null)
+                        {
+                            foreach (var listItem in ListItems)
+                            {
+                                if (@request.ListItemID == listItem.Id)
+                                {
+                                    @if (Items != null)
+                                    {
+                                        foreach (var item in Items)
+                                        {
+                                            if (@request.ListItem.ItemID == item.Id)
+                                            {    
+                                                <td>@item.Name</td>
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        @if (ListItems != null)
+                        {
+                            foreach (var listItem in ListItems)
+                            {
+                                if (@request.ListItemID == listItem.Id)
+                                {
+                                    <td>@listItem.Price</td>
+                                }
+                            }
+                        }
+                        <td>@request.Offer.Name</td>
+                        @if (@request.Offer.Name == "Transaction")
+                        {
+                            <td>@request.Payment.Name</td>
+                            <td>NIL</td>
+                        }
+                        @if (@request.Offer.Name == "Trade/Swap")
+                        {
+                            <td>NIL</td>
+                            <td>@request.Item.Name</td>
+                        } 
+                        <td>
+                            <a href="/inrequests/view/@request.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+
+    private List<Request> Requests;
+    private IList<ListItem> ListItems;
+    private IList<Item> Items;
+    private List<AppUser> AppUsers;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private string _currentUserId;
+    private string _currentUserName;
+    private string _currentUserRole;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Requests = await _client.GetFromJsonAsync<List<Request>>($"{Endpoints.RequestsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _claims = user.Claims;
+            //_currentUserName = user.Identity.Name;
+            if (_claims.Count() > 0)
+            {
+                foreach (var claim in _claims)
+                {
+                    if (claim.Type == "sub")
+                    {
+                        _currentUserId = claim.Value;
+                        continue;
+
+                    }
+                    if (claim.Type == "name")
+                    {
+                        _currentUserName = claim.Value;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (_currentUserId != String.Empty)
+        {
+            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
+        }
+    }
+
+    async Task Delete(int requestId)
+    {
+        var request = Requests.First(q => q.Id == requestId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {request.Payment}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.RequestsEndpoint}/{requestId}");
+            await OnInitializedAsync();
+
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#requestsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#requestsTable");
+    }
+
+}

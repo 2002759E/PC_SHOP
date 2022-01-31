@@ -77,9 +77,10 @@
         {
             if (@listItem.ItemID == id)
             {
-                <button class="btn btn-success btn-block" @onclick="@(() => goprice(@listItem.Id))">
-                    Edit Item Price
-                </button>
+<button class="btn btn-primary btn-block" @onclick="@(() => goprice(@listItem.Id))">
+    <span class="oi oi-arrow-left"></span>
+    Edit Item Price
+</button>
             }
         }
     }

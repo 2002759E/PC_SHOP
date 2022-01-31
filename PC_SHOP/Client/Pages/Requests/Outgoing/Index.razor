@@ -1,4 +1,4 @@
-﻿@page "/listitems/"
+﻿@page "/outrequests/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
@@ -6,95 +6,93 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Listed Items</h3>
+
+<h3>Outgoing Requests</h3>
 
 <br />
-<a href="/listitems/create" class="btn btn-secondary">
+<a href="/outrequests/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
-    List New Item
+    Create New Request
 </a>
 <br />
 <br />
 
-@if (ListItems == null)
+@if (Requests == null)
 {
 
-    <div class="alert alert-info">Loading Items...</div>
+    <div class="alert alert-info">Loading Requests...</div>
 
 }
 else
 {
-    <table class="table table-responsive" id="listItemsTable">
+    <table class="table table-responsive" id="requestsTable">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price($)</th>
-                <th>Condition</th>
-                <th>Brand</th>
-                <th>Category</th>
-                <th>Listed by</th>
+                <th>Item Owner</th>
+                <th>Item Requested</th>
+                <th>Item Price($)</th>
+                <th>Offer</th>
+                <th>Payment</th>
+                <th>Item For Trade</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var listitem in ListItems)
+            @foreach (var request in Requests)
             {
-                if (listitem.CreatedBy == @_currentUserName)
+                if (request.CreatedBy == @_currentUserName)
                 {
                     <tr>
-                        <td>@listitem.Item.Name</td>
-                        <td>@listitem.Item.Description</td>
-                        <td>@listitem.Price</td>
-                        @if (Items != null)
+                        @if (ListItems != null)
                         {
-                            foreach (var item in Items)
+                            foreach (var listItem in ListItems)
                             {
-                                if (@listitem.ItemID == item.Id)
+                                if (@request.ListItemID == listItem.Id)
                                 {
-                                    <td>@item.Condition.Name</td>
-                                }
-                            }
-                        }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Brand.Name</td>
-                                }
-                            }
-                        }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Category.Name</td>
-                                }
-                            }
-                        }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.CreatedBy</td>
-                                }
-                            }
-                        }
-                        <td>
+                                    @if (Items != null)
+                                    {
+                                        foreach (var item in Items)
+                                        {
+                                            if (@request.ListItem.ItemID == item.Id)
+                                            {
+                                                <td>@item.CreatedBy</td>
+                                                <td>@item.Name</td>
 
-                            <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        @if (ListItems != null)
+                        {
+                            foreach (var listItem in ListItems)
+                            {
+                                if (@request.ListItemID == listItem.Id)
+                                {
+                                    <td>@listItem.Price</td>
+                                }
+                            }
+                        }
+                        <td>@request.Offer.Name</td>
+                        @if (@request.Offer.Name == "Transaction")
+                        {
+                            <td>@request.Payment.Name</td>
+                            <td>NIL</td>
+                        }
+                        @if (@request.Offer.Name == "Trade/Swap")
+                        {
+                            <td>NIL</td>
+                            <td>@request.Item.Name</td>
+                        } 
+                        <td>
+                            <a href="/outrequests/view/@request.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
                             </a>
-                            <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
+                            <a href="/outrequests/edit/@request.Id" class="btn btn-warning">
                                 <span class="oi oi-pencil"></span>
                             </a>
-                            <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
+                            <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
                                 <span class="oi oi-delete"></span>
                             </button>
                         </td>
@@ -103,11 +101,13 @@ else
             }
         </tbody>
     </table>
+
 }
 
 @code {
 
-    private List<ListItem> ListItems;
+    private List<Request> Requests;
+    private IList<ListItem> ListItems;
     private IList<Item> Items;
     private List<AppUser> AppUsers;
     private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
@@ -115,9 +115,9 @@ else
     private string _currentUserName;
     private string _currentUserRole;
 
-
     protected async override Task OnInitializedAsync()
     {
+        Requests = await _client.GetFromJsonAsync<List<Request>>($"{Endpoints.RequestsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
 
@@ -154,13 +154,13 @@ else
         }
     }
 
-    async Task Delete(int listitemId)
+    async Task Delete(int requestId)
     {
-        var listitem = ListItems.First(q => q.Id == listitemId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {listitem.Item.Name}?");
+        var request = Requests.First(q => q.Id == requestId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {request.Payment}?");
         if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listitemId}");
+            await _client.DeleteAsync($"{Endpoints.RequestsEndpoint}/{requestId}");
             await OnInitializedAsync();
 
         }
@@ -168,13 +168,13 @@ else
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await js.InvokeVoidAsync("AddDataTable", "#listItemsTable");
+        await js.InvokeVoidAsync("AddDataTable", "#requestsTable");
 
     }
 
     public void Dispose()
     {
-        js.InvokeVoidAsync("DataTablesDispose", "#listItemsTable");
+        js.InvokeVoidAsync("DataTablesDispose", "#requestsTable");
     }
 
 }

@@ -14,7 +14,8 @@
     <button type="submit" class="btn btn-success btn-block">
         @ButtonText
     </button>
-    <button class="btn btn-success btn-block" @onclick="@(() => goitem(@listitem.Item.Id))">
+    <button class="btn btn-primary btn-block" @onclick="@(() => goitem(@listitem.ItemID))">
+        <span class="oi oi-arrow-right"></span>
         Edit Item
     </button>
     <BackToList Target="listitems" />
@@ -29,7 +30,7 @@
 
     private IList<Item> Items;
 
-    private void goitem(int id2)
+    private void goitem(int? id2)
     {
         _navManager.NavigateTo("/listitems/edititem/" + id2);
     }

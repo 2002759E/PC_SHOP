@@ -141,7 +141,7 @@ else
         {
             _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
         }
-    }
+    }   
 
     async Task Delete(int listitemId)
     {

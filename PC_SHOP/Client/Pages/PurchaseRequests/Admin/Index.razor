@@ -1,0 +1,171 @@
+﻿@page "/adminpurchaserequests/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@implements IDisposable
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<h3>All Requests</h3>
+
+<br />
+<a href="/adminpurchaserequests/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Request
+</a>
+<br />
+<br />
+
+@if (PurchaseRequests == null)
+{
+
+    <div class="alert alert-info">Loading Requests...</div>
+
+}
+else
+{
+    <table class="table table-responsive" id="purchaserequestsTable">
+        <thead>
+            <tr>
+                <th>Item Owner</th>
+                <th>Item Requested</th>
+                <th>Item Price($)</th>
+                <th>Offered Price($)</th>
+                <th>Payment</th>
+                <th>Requested By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in PurchaseRequests)
+            {
+               
+            <tr>
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@request.ListItemID == listItem.Id)
+                        {
+                            @if (Items != null)
+                            {
+                                foreach (var item in Items)
+                                {
+                                    if (@request.ListItem.ItemID == item.Id)
+                                    {
+                                        <td>@item.CreatedBy</td>
+                                        <td>@item.Name</td>
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@request.ListItemID == listItem.Id)
+                        {
+                            <td>@listItem.Price</td>
+                        }
+                    }
+                }
+                <td>@request.Price</td>
+                <td>@request.Payment.Name</td>
+                <td>@request.CreatedBy</td>
+                <td>
+                    <a href="/adminpurchaserequests/view/@request.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/adminpurchaserequests/edit/@request.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
+                
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+
+    private List<PurchaseRequest> PurchaseRequests;
+    private IList<ListItem> ListItems;
+    private IList<Item> Items;
+    private List<AppUser> AppUsers;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private string _currentUserId;
+    private string _currentUserName;
+    private string _currentUserRole;
+
+    protected async override Task OnInitializedAsync()
+    {
+        PurchaseRequests = await _client.GetFromJsonAsync<List<PurchaseRequest>>($"{Endpoints.PurchaseRequestsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _claims = user.Claims;
+            //_currentUserName = user.Identity.Name;
+            if (_claims.Count() > 0)
+            {
+                foreach (var claim in _claims)
+                {
+                    if (claim.Type == "sub")
+                    {
+                        _currentUserId = claim.Value;
+                        continue;
+
+                    }
+                    if (claim.Type == "name")
+                    {
+                        _currentUserName = claim.Value;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (_currentUserId != String.Empty)
+        {
+            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
+        }
+    }
+
+    async Task Delete(int purchaserequestId)
+    {
+        var purchaserequest = PurchaseRequests.First(q => q.Id == purchaserequestId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete request?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{purchaserequestId}");
+            await OnInitializedAsync();
+
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#purchaserequestsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#purchaserequestsTable");
+    }
+
+}

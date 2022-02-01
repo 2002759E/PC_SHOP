@@ -4,7 +4,7 @@
 
 <h3>Edit</h3>
 
-<FormComponent ButtonText="Update" OnValidSubmit="EditTradeRequest" traderequest="traderequest" />
+<FormComponent ButtonText="Update" OnValidSubmit="EditTradeRequest" traderequest="traderequest" Lock="true"/>
 
 @code {
     [Parameter] public int id { get; set; }

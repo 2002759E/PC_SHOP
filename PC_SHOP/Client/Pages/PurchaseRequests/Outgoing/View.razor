@@ -1,0 +1,101 @@
+﻿@page "/outpurchaserequests/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View</h3>
+
+<EditForm Model="@purchaserequest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled>
+        <div class="form-group">
+            <label>Requested Item:</label>
+            <div>
+                <InputSelect @bind-Value="purchaserequest.ListItemID" class="form-control">
+                    <option value="">--Select Item --</option>
+                    @if (ListItems != null)
+                    {
+                        foreach (var listItem in ListItems)
+                        {
+
+                            @if (Items != null)
+                            {
+                                foreach (var item in Items)
+                                {
+                                    if (listItem.ItemID == item.Id)
+                                    {
+                                        <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => purchaserequest.ListItemID)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Item Price($):</label>
+            <div>
+                
+                    @if (ListItems != null)
+                    {
+                        foreach (var listItem in ListItems)
+                        {
+                            if (@purchaserequest.ListItemID == @listItem.Id)
+                            {
+                                <InputNumber @bind-Value="@listItem.Price" class="form-control" />
+                                <ValidationMessage For="@(() => listItem.Price)" />
+                            }
+                        }
+
+                    }
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Offered Price:</label>
+            <div>
+                <InputNumber @bind-Value="@purchaserequest.Price" class="form-control" />
+                <ValidationMessage For="@(() => purchaserequest.Price)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Payment Method:</label>
+            <div>
+                <InputSelect @bind-Value="purchaserequest.PaymentID" class="form-control">
+                    <option value="">--Payment Method--</option>
+                    @if (Payments != null)
+                    {
+                        foreach (var payment in Payments)
+                        {
+                            <option value="@payment.Id">@payment.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => purchaserequest.PaymentID)" />
+            </div>
+        </div>
+    </fieldset>
+    <BackToList Target="outpurchaserequests" />
+
+</EditForm>
+
+@code {
+    [Parameter] public int id { get; set; }
+    PurchaseRequest purchaserequest = new PurchaseRequest();
+    protected async override Task OnParametersSetAsync()
+    {
+        purchaserequest = await _client.GetFromJsonAsync<PurchaseRequest>($"{Endpoints.PurchaseRequestsEndpoint}/{id}");
+    }
+
+    private IList<Item> Items;
+    private IList<Payment> Payments;
+    private IList<ListItem> ListItems;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+        Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+    }
+}

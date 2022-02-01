@@ -1,0 +1,145 @@
+﻿@page "/alllistitems/trade/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Create Trade Request</h3>
+<hr />
+<br />
+
+<EditForm Model="@traderequest" OnValidSubmit="CreateTradeRequest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Requested Item:</label>
+        <div>
+            <InputSelect @bind-Value="traderequest.ListItemID" class="form-control">
+                <option value="">-- Confirm Select Item --</option>
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+
+                        @if (Items != null)
+                        {
+                            foreach (var item in Items)
+                            {
+                                if (listItem.ItemID == item.Id)
+                                {
+                                    if (listItem.Id == listitem.Id)
+                                    {
+                                        <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => traderequest.ListItemID)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Item for trade:</label>
+        <div>
+            <InputSelect @bind-Value="traderequest.ItemID" class="form-control">
+                <option value="">--Select Item --</option>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@item.CreatedBy == @_currentUserName)
+                        {
+                            <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                        }
+
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => traderequest.ItemID)" />
+        </div>
+    </div>
+
+
+
+
+    <button type="submit" class="btn btn-success btn-block">
+        Create Request
+    </button>
+
+    <BackToList Target="alllistitems" />
+
+</EditForm>
+
+@code {
+
+    private List<AppUser> AppUsers;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private string _currentUserId;
+    private string _currentUserName;
+    private string _currentUserRole;
+
+    [Parameter] public int id { get; set; }
+
+    TradeRequest traderequest = new TradeRequest();
+
+    private IList<Item> Items;
+    private IList<ListItem> ListItems;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _claims = user.Claims;
+            //_currentUserName = user.Identity.Name;
+            if (_claims.Count() > 0)
+            {
+                foreach (var claim in _claims)
+                {
+                    if (claim.Type == "sub")
+                    {
+                        _currentUserId = claim.Value;
+                        continue;
+
+                    }
+                    if (claim.Type == "name")
+                    {
+                        _currentUserName = claim.Value;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (_currentUserId != String.Empty)
+        {
+            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
+        }
+    }
+
+    private async Task CreateTradeRequest()
+    {
+        await _client.PostAsJsonAsync(Endpoints.TradeRequestsEndpoint, traderequest);
+        _navManager.NavigateTo("/alllistitems/");
+    }
+
+    ListItem listitem = new ListItem();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        listitem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{id}");
+
+    }
+}

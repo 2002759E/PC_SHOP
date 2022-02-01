@@ -8,6 +8,11 @@
 
 <h3>Listed Items</h3>
 
+<a href="/alllistitems/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    List New Item
+</a>
+<br />
 <br />
 
 @if (ListItems == null)
@@ -34,60 +39,69 @@ else
         <tbody>
             @foreach (var listitem in ListItems)
             {
-                if (listitem.CreatedBy != @_currentUserName)
-                {
-                    <tr>
-                        <td>@listitem.Item.Name</td>
-                        <td>@listitem.Item.Description</td>
-                        <td>@listitem.Price</td>
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Condition.Name</td>
-                                }
-                            }
-                        }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Brand.Name</td>
-                                }
-                            }
-                        }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Category.Name</td>
-                                }
-                            }
-                        }
-                        @if (Items != null)
-                        {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.CreatedBy</td>
-                                }
-                            }
-                        }
-                        <td>
 
-                            <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
-                                <span class="oi oi-book"></span>
-                            </a>
-                        </td>
-                    </tr>
-                }
+                <tr>
+                    <td>@listitem.Item.Name</td>
+                    <td>@listitem.Item.Description</td>
+                    <td>@listitem.Price</td>
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Condition.Name</td>
+                            }
+                        }
+                    }
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Brand.Name</td>
+                            }
+                        }
+                    }
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Category.Name</td>
+                            }
+                        }
+                    }
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.CreatedBy</td>
+                            }
+                        }
+                    }
+                    <td>
+                        <a href="/alllistitems/view/@listitem.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a>
+                            @if (listitem.CreatedBy != @_currentUserName)
+                            {
+                                <a href="/alllistitems/trade/@listitem.Id" class="btn btn-info">
+                                    <span class="oi oi-transfer"></span>
+                                </a>
+                                <a href="/alllistitems/purchase/@listitem.Id" class="btn btn-success">
+                                    <span class="oi oi-dollar"></span>
+                                </a>
+                            }
+                        </a>
+                    </td>
+                </tr>
+
             }
         </tbody>
     </table>

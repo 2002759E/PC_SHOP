@@ -1,0 +1,28 @@
+﻿@page "/adminpurchaserequests/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create Requests</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create request" purchaserequest="purchaserequest" OnValidSubmit="@CreatePurchaseRequest" />
+
+@code {
+    PurchaseRequest purchaserequest = new PurchaseRequest();
+ 
+    private IList<Payment> Payments;
+    private IList<ListItem> ListItems;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+    }
+
+    private async Task CreatePurchaseRequest()
+    {
+        await _client.PostAsJsonAsync(Endpoints.PurchaseRequestsEndpoint, purchaserequest);
+        _navManager.NavigateTo("/adminpurchaserequests/");
+    }
+}

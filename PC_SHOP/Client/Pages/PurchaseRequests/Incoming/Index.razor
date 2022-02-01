@@ -1,4 +1,4 @@
-﻿@page "/intraderequests/"
+﻿@page "/inpurchaserequests/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
@@ -7,10 +7,10 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
-<h3>Incoming Trade Requests</h3>
+<h3>Incoming Purchase Requests</h3>
 
 
-@if (TradeRequests == null)
+@if (PurchaseRequests == null)
 {
 
     <div class="alert alert-info">Loading Requests...</div>
@@ -18,34 +18,35 @@
 }
 else
 {
-    <table class="table table-responsive" id="intraderequestsTable">
+    <table class="table table-responsive" id="inpurchaserequestsTable">
         <thead>
             <tr>
                 <th>Requested By</th>
                 <th>Item Requested</th>
                 <th>Item Price($)</th>
-                <th>Item For Trade</th>
+                <th>Offered Price($)</th>
+                <th>Payment</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var traderequest in TradeRequests)
+            @foreach (var request in PurchaseRequests)
             {
-                if (traderequest.ListItem.CreatedBy == @_currentUserName)
+                if (request.ListItem.CreatedBy == @_currentUserName)
                 {
                     <tr>
-                        <td>@traderequest.CreatedBy</td>
+                        <td>@request.CreatedBy</td>
                         @if (ListItems != null)
                         {
                             foreach (var listItem in ListItems)
                             {
-                                if (@traderequest.ListItemID == listItem.Id)
+                                if (@request.ListItemID == listItem.Id)
                                 {
                                     @if (Items != null)
                                     {
                                         foreach (var item in Items)
                                         {
-                                            if (@traderequest.ListItem.ItemID == item.Id)
+                                            if (@request.ListItem.ItemID == item.Id)
                                             {    
                                                 <td>@item.Name</td>
 
@@ -59,21 +60,22 @@ else
                         {
                             foreach (var listItem in ListItems)
                             {
-                                if (@traderequest.ListItemID == listItem.Id)
+                                if (@request.ListItemID == listItem.Id)
                                 {
                                     <td>@listItem.Price</td>
                                 }
                             }
                         }
-                        <td>@traderequest.Item.Name</td>
+                        <td>@request.Price</td>
+                        <td>@request.Payment.Name</td>
                         <td>
-                            <a href="/intraderequests/view/@traderequest.Id" class="btn btn-primary">
+                            <a href="/inpurchaserequests/view/@request.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
                             </a>
-                            <a href="/intraderequests/accept/@traderequest.Id" class="btn btn-success">
+                            <a href="/inpurchaserequests/accept/@request.Id" class="btn btn-success">
                                 <span class="oi oi-circle-check"></span>
                             </a>
-                            <button class="btn btn-danger" @onclick="@(()=>Delete(traderequest.Id))">
+                            <button class="btn btn-danger" @onclick="@(()=>Delete(@request.Id))">
                                 <span class="oi oi-circle-x"></span>
                             </button>
                         </td>
@@ -87,7 +89,7 @@ else
 
 @code {
 
-    private List<TradeRequest> TradeRequests;
+    private List<PurchaseRequest> PurchaseRequests;
     private IList<ListItem> ListItems;
     private IList<Item> Items;
     private List<AppUser> AppUsers;
@@ -98,7 +100,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        TradeRequests = await _client.GetFromJsonAsync<List<TradeRequest>>($"{Endpoints.TradeRequestsEndpoint}");
+        PurchaseRequests = await _client.GetFromJsonAsync<List<PurchaseRequest>>($"{Endpoints.PurchaseRequestsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
 
@@ -135,13 +137,13 @@ else
         }
     }
 
-    async Task Delete(int traderequestId)
+    async Task Delete(int purchaserequestId)
     {
-        var traderequest = TradeRequests.First(q => q.Id == traderequestId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this request?");
+        var purchaserequest = PurchaseRequests.First(q => q.Id == purchaserequestId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete request?");
         if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{traderequestId}");
+            await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{purchaserequestId}");
             await OnInitializedAsync();
 
         }
@@ -149,13 +151,13 @@ else
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await js.InvokeVoidAsync("AddDataTable", "#intraderequestsTable");
+        await js.InvokeVoidAsync("AddDataTable", "#inpurchaserequestsTable");
 
     }
 
     public void Dispose()
     {
-        js.InvokeVoidAsync("DataTablesDispose", "#intraderequestsTable");
+        js.InvokeVoidAsync("DataTablesDispose", "#inpurchaserequestsTable");
     }
 
 }

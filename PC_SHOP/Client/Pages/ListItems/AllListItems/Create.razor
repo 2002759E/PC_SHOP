@@ -1,0 +1,128 @@
+﻿@page "/alllistitems/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Listed Items for Swap/Sell</h3>
+<hr />
+<br />
+
+<EditForm Model="@listitem" OnValidSubmit="checkexist">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Item:</label>
+        <div>
+            <InputSelect @bind-Value="listitem.ItemID" class="form-control">
+                <option value="">--Select Item--</option>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@item.CreatedBy == @_currentUserName)
+                        {
+                            <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                        }
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => listitem.ItemID)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Price($):</label>
+        <div>
+            <InputNumber @bind-Value="@listitem.Price" class="form-control" />
+            <ValidationMessage For="@(() => listitem.Price)" />
+        </div>
+    </div>
+    @if (exist)
+    {
+        <p style="color:red">Item already listed! Please list another item.</p>
+        exist = false;
+    }
+    <button type="submit" class="btn btn-success btn-block">
+        List Item
+    </button>
+    <BackToList Target="alllistitems" />
+</EditForm>
+
+@code {
+
+    ListItem listitem = new ListItem();
+
+    public bool exist { get; set; } = false;
+
+    private List<AppUser> AppUsers;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private string _currentUserId;
+    private string _currentUserName;
+    private string _currentUserRole;
+    private IList<Item> Items;
+    private IList<ListItem> ListItems;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _claims = user.Claims;
+            //_currentUserName = user.Identity.Name;
+            if (_claims.Count() > 0)
+            {
+                foreach (var claim in _claims)
+                {
+                    if (claim.Type == "sub")
+                    {
+                        _currentUserId = claim.Value;
+                        continue;
+
+                    }
+                    if (claim.Type == "name")
+                    {
+                        _currentUserName = claim.Value;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (_currentUserId != String.Empty)
+        {
+            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
+        }
+    }
+
+    public void checkexist()
+    {
+        foreach (var listItem in ListItems)
+        {
+            if (listitem.ItemID == @listItem.ItemID)
+            {
+                exist = true;
+                break;
+            }
+        }
+
+        if (!exist)
+        {
+            CreateListItem();
+        }
+
+    }
+
+    private async Task CreateListItem()
+    {
+
+        await _client.PostAsJsonAsync(Endpoints.ListItemsEndpoint, listitem);
+        _navManager.NavigateTo("/alllistitems/");
+
+    }
+}

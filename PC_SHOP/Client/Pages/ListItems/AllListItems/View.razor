@@ -1,0 +1,123 @@
+﻿@page "/alllistitems/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View</h3>
+
+<EditForm Model="@listitem">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled>
+        <div class="form-group">
+            <label>Name:</label>
+            <div>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == @item.Id)
+                        {
+                            <InputText @bind-Value="@item.Name" class="form-control" />
+                            <ValidationMessage For="@(() => item.Name)" />
+                        }
+                    }
+
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Price:</label>
+            <div>
+                <InputNumber @bind-Value="@listitem.Price" class="form-control" />
+                <ValidationMessage For="@(() => listitem.Price)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description:</label>
+            <div>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == @item.Id)
+                        {
+                            <InputText @bind-Value="@item.Description" class="form-control" />
+                            <ValidationMessage For="@(() => item.Description)" />
+                        }
+                    }
+
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Condition:</label>
+            <div>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == @item.Id)
+                        {
+                            <InputText @bind-Value="@item.Condition.Name" class="form-control" />
+                            <ValidationMessage For="@(() => item.Condition.Name)" />
+                        }
+                    }
+
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand:</label>
+            <div>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == @item.Id)
+                        {
+                            <InputText @bind-Value="@item.Brand.Name" class="form-control" />
+                            <ValidationMessage For="@(() => item.Brand.Name)" />
+                        }
+                    }
+
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Category:</label>
+            <div>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == @item.Id)
+                        {
+                            <InputText @bind-Value="@item.Category.Name" class="form-control" />
+                            <ValidationMessage For="@(() => item.Category.Name)" />
+                        }
+                    }
+
+                }
+            </div>
+        </div>
+    </fieldset>
+    <BackToList Target="alllistitems" />
+</EditForm>
+
+@code {
+    [Parameter] public int id { get; set; }
+    ListItem listitem = new ListItem();
+    protected async override Task OnParametersSetAsync()
+    {
+        listitem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{id}");
+    }
+
+    private IList<Item> Items;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+    }
+
+
+}

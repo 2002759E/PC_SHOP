@@ -10,7 +10,8 @@ namespace PC_SHOP.Shared.Domain
 {
     public class PurchaseRequest : BaseDomainModel
     {
-
+        [Required]
+        public double? Price { get; set; }
         [Required]
         public int? PaymentID { get; set; }
         public virtual Payment Payment { get; set; }

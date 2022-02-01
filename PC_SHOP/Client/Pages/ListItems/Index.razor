@@ -32,7 +32,7 @@ else
                 <th>Price($)</th>
                 <th>Condition</th>
                 <th>Brand</th>
-                <th>Category</th> 
+                <th>Category</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -94,6 +94,13 @@ else
     </table>
 }
 
+@if (cascaded)
+{
+    <p style="color:red">Unable to delete lisitng. Please clear all requests related to listing first.</p>
+    cascaded = false;
+}
+
+
 @code {
 
     private List<ListItem> ListItems;
@@ -103,6 +110,8 @@ else
     private string _currentUserId;
     private string _currentUserName;
     private string _currentUserRole;
+
+    public bool cascaded { get; set; } = false;
 
 
     protected async override Task OnInitializedAsync()
@@ -141,7 +150,7 @@ else
         {
             _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
         }
-    }   
+    }
 
     async Task Delete(int listitemId)
     {
@@ -149,11 +158,22 @@ else
         var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {listitem.Item.Name}?");
         if (confirm)
         {
+
             await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listitemId}");
             await OnInitializedAsync();
 
+
+        }
+
+        foreach (var li in ListItems)
+        {
+            if (li.Id == listitemId)
+            {
+                cascaded = true;
+            }
         }
     }
+
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {

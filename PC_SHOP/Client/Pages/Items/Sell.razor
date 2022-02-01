@@ -11,25 +11,26 @@
 <EditForm Model="@listitem" OnValidSubmit="checkexist">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="form-group">
-        <label>Item:</label>
-        <div>
-            <InputSelect @bind-Value="listitem.ItemID" class="form-control">
-                <option value="">--Select Item--</option>
-                @if (Items != null)
-                {
-                    foreach (var Item in Items)
+    <fieldset disabled>
+        <div class="form-group">
+            <label>Item:</label>
+            <div>
+                <InputSelect @bind-Value="listitem.ItemID" class="form-control">
+                    @if (Items != null)
                     {
-                        if (@Item.Id == item.Id)
+                        foreach (var Item in Items)
                         {
-                            <option value="@Item.Id">Name: @Item.Name   Condition: @Item.Condition.Name   Brand: @Item.Brand.Name   Category: @Item.Category.Name</option>
+                            if (@Item.Id == item.Id)
+                            {
+                                <option value="@Item.Id">Name: @Item.Name   Condition: @Item.Condition.Name   Brand: @Item.Brand.Name   Category: @Item.Category.Name</option>
+                            }
                         }
                     }
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => listitem.ItemID)" />
+                </InputSelect>
+                <ValidationMessage For="@(() => listitem.ItemID)" />
+            </div>
         </div>
-    </div>
+    </fieldset>
     <div class="form-group">
         <label>Price($):</label>
         <div>
@@ -131,7 +132,8 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        item = await
-        _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{id}");
+        item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{id}");
+
+        listitem.ItemID = item.Id;
     }
 }

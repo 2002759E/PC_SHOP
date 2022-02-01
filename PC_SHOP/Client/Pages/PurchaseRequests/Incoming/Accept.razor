@@ -1,0 +1,90 @@
+﻿@page "/inpurchaserequests/accept/{itemid:int}/{reqid:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Accept Request</h3>
+
+<EditForm Model="@item" OnValidSubmit="Clean">
+    <fieldset disabled>
+        <div class="form-group">
+            <label>Sell to:</label>
+            <div>
+                <InputText @bind-Value="@item.CreatedBy" class="form-control" />
+            </div>
+        </div>
+    </fieldset>
+    <fieldset disabled>
+        <div class="form-group">
+            <label>For($):</label>
+            <div>
+                <InputNumber @bind-Value="@purchaserequest.Price" class="form-control" />
+            </div>
+        </div>
+    </fieldset>
+    <button type="submit" class="btn btn-success btn-block">
+        confirm
+    </button>
+    <BackToList Target="inpurchaserequests" />
+</EditForm>
+
+@code {
+    [Parameter] public int itemid { get; set; }
+    [Parameter] public int reqid { get; set; }
+
+    Item item = new Item();
+    PurchaseRequest purchaserequest = new PurchaseRequest();
+
+    private IList<TradeRequest> tr;
+    private IList<PurchaseRequest> pr;
+    private IList<ListItem> li;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{itemid}");
+        purchaserequest = await _client.GetFromJsonAsync<PurchaseRequest>($"{Endpoints.PurchaseRequestsEndpoint}/{reqid}");
+
+        item.CreatedBy = purchaserequest.CreatedBy;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        tr = await _client.GetFromJsonAsync<List<TradeRequest>>($"{Endpoints.TradeRequestsEndpoint}");
+        pr = await _client.GetFromJsonAsync<List<PurchaseRequest>>($"{Endpoints.PurchaseRequestsEndpoint}");
+        li = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+    }
+
+    async Task Clean()
+    {
+        foreach (var tr in tr)
+        {
+            if (tr.ListItemID == purchaserequest.ListItemID)
+            {
+                await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{tr.Id}");
+            }
+        }
+        foreach (var pr in pr)
+        {
+            if (pr.ListItemID == purchaserequest.ListItemID)
+            {
+                await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{pr.Id}");
+            }
+        }
+        foreach (var li in li)
+        {
+            if (li.Id == purchaserequest.ListItemID)
+            {
+                await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{li.Id}");
+            }
+        }
+
+        EditItem();
+    }
+
+    async Task EditItem()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid}", item);
+        _navManager.NavigateTo("/inpurchaserequests/");
+    }
+
+
+}

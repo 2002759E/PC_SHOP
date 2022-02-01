@@ -11,38 +11,38 @@
 <EditForm Model="@purchaserequest" OnValidSubmit="CreatePurchaseRequest">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <fieldset disabled>
+        <div class="form-group">
 
-    <div class="form-group">
+            <label>Requested Item:</label>
+            <div>
+                <InputSelect @bind-Value="purchaserequest.ListItemID" class="form-control">
 
-        <label>Requested Item:</label>
-        <div>
-            <InputSelect @bind-Value="purchaserequest.ListItemID" class="form-control">
-                <option value="">-- Confirm Select Item --</option>
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
+                    @if (ListItems != null)
                     {
-
-                        @if (Items != null)
+                        foreach (var listItem in ListItems)
                         {
-                            foreach (var item in Items)
+
+                            @if (Items != null)
                             {
-                                if (listItem.ItemID == item.Id)
+                                foreach (var item in Items)
                                 {
-                                    if (listItem.Id == listitem.Id)
+                                    if (listItem.ItemID == item.Id)
                                     {
-                                        <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                        if (listItem.Id == listitem.Id)
+                                        {
+                                            <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => purchaserequest.ListItemID)" />
+                </InputSelect>
+                <ValidationMessage For="@(() => purchaserequest.ListItemID)" />
+            </div>
         </div>
-    </div>
-
+    </fieldset>
     <div class="form-group">
         <label>Offered Price:</label>
         <div>
@@ -99,6 +99,7 @@
         Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
 
+
         AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -143,6 +144,8 @@
     protected async override Task OnParametersSetAsync()
     {
         listitem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{id}");
+
+        purchaserequest.ListItemID = listitem.Id;
     }
 }
 

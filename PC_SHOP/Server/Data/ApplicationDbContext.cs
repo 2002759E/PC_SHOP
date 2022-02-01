@@ -25,9 +25,9 @@ namespace PC_SHOP.Server.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Condition> Conditions { get; set; }
         public DbSet<Item> Items { get; set; }
-        public DbSet<Offer> Offers { get; set; }
+        public DbSet<PurchaseRequest> PurchaseRequests { get; set; }
         public DbSet<Payment> Payments { get; set; }
-        public DbSet<Request> Requests { get; set; }
+        public DbSet<TradeRequest> TradeRequests { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ListItem> ListItem { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -41,8 +41,6 @@ namespace PC_SHOP.Server.Data
             builder.ApplyConfiguration(new CategorySeedConfiguration());
 
             builder.ApplyConfiguration(new ConditionSeedConfiguration());
-
-            builder.ApplyConfiguration(new OfferSeedConfiguration());
 
             builder.ApplyConfiguration(new BrandSeedConfiguration());
 

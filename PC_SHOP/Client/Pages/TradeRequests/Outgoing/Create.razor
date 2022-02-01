@@ -1,0 +1,28 @@
+﻿@page "/outtraderequests/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Create Requests</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create request" traderequest="traderequest" OnValidSubmit="@CreateTradeRequest" />
+
+@code {
+    TradeRequest traderequest = new TradeRequest();
+
+    private IList<Item> Items;
+    private IList<ListItem> ListItems;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+    }
+
+    private async Task CreateTradeRequest()
+    {
+        await _client.PostAsJsonAsync(Endpoints.TradeRequestsEndpoint, traderequest);
+        _navManager.NavigateTo("/outtraderequests/");
+    }
+}

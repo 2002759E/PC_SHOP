@@ -1,4 +1,4 @@
-﻿using CarRentalManagement.Shared.Domain;
+﻿using PC_SHOP.Shared.Domain;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +16,7 @@ namespace PC_SHOP.Shared.Domain
         [Required]
         public int? ItemID { get; set; }
         public virtual Item Item { get; set; }
-        public virtual List<Request> Requests { get; set; }
+        public virtual List<TradeRequest> TradeRequests { get; set; }
+        public virtual List<PurchaseRequest> PurchaseRequests { get; set; }
     }
 }

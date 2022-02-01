@@ -1,4 +1,4 @@
-﻿@page "/inrequests/"
+﻿@page "/outtraderequests/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @attribute [Authorize]
@@ -7,10 +7,17 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
-<h3>Incoming Requests</h3>
+<h3>Outgoing Trade Requests</h3>
 
+<br />
+<a href="/outtraderequests/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Request
+</a>
+<br />
+<br />
 
-@if (Requests == null)
+@if (TradeRequests == null)
 {
 
     <div class="alert alert-info">Loading Requests...</div>
@@ -18,37 +25,35 @@
 }
 else
 {
-    <table class="table table-responsive" id="requestsTable">
+    <table class="table table-responsive" id="outtraderequestsTable">
         <thead>
             <tr>
-                <th>Requested By</th>
+                <th>Item Owner</th>
                 <th>Item Requested</th>
                 <th>Item Price($)</th>
-                <th>Offer</th>
-                <th>Payment</th>
                 <th>Item For Trade</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var request in Requests)
+            @foreach (var traderequest in TradeRequests)
             {
-                if (request.ListItem.CreatedBy == @_currentUserName)
+                if (traderequest.CreatedBy == @_currentUserName)
                 {
                     <tr>
-                        <td>@request.CreatedBy</td>
                         @if (ListItems != null)
                         {
                             foreach (var listItem in ListItems)
                             {
-                                if (@request.ListItemID == listItem.Id)
+                                if (@traderequest.ListItemID == listItem.Id)
                                 {
                                     @if (Items != null)
                                     {
                                         foreach (var item in Items)
                                         {
-                                            if (@request.ListItem.ItemID == item.Id)
-                                            {    
+                                            if (@traderequest.ListItem.ItemID == item.Id)
+                                            {
+                                                <td>@item.CreatedBy</td>
                                                 <td>@item.Name</td>
 
                                             }
@@ -61,27 +66,23 @@ else
                         {
                             foreach (var listItem in ListItems)
                             {
-                                if (@request.ListItemID == listItem.Id)
+                                if (@traderequest.ListItemID == listItem.Id)
                                 {
                                     <td>@listItem.Price</td>
                                 }
                             }
                         }
-                        <td>@request.Offer.Name</td>
-                        @if (@request.Offer.Name == "Transaction")
-                        {
-                            <td>@request.Payment.Name</td>
-                            <td>NIL</td>
-                        }
-                        @if (@request.Offer.Name == "Trade/Swap")
-                        {
-                            <td>NIL</td>
-                            <td>@request.Item.Name</td>
-                        } 
+                        <td>@traderequest.Item.Name</td>
                         <td>
-                            <a href="/inrequests/view/@request.Id" class="btn btn-primary">
+                            <a href="/outtraderequests/view/@traderequest.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
                             </a>
+                            <a href="/outtraderequests/edit/@traderequest.Id" class="btn btn-warning">
+                                <span class="oi oi-pencil"></span>
+                            </a>
+                            <button class="btn btn-danger" @onclick="@(()=>Delete (traderequest.Id))">
+                                <span class="oi oi-delete"></span>
+                            </button>
                         </td>
                     </tr>
                 }
@@ -93,7 +94,7 @@ else
 
 @code {
 
-    private List<Request> Requests;
+    private List<TradeRequest> TradeRequests;
     private IList<ListItem> ListItems;
     private IList<Item> Items;
     private List<AppUser> AppUsers;
@@ -104,7 +105,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        Requests = await _client.GetFromJsonAsync<List<Request>>($"{Endpoints.RequestsEndpoint}");
+        TradeRequests = await _client.GetFromJsonAsync<List<TradeRequest>>($"{Endpoints.TradeRequestsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
 
@@ -141,13 +142,13 @@ else
         }
     }
 
-    async Task Delete(int requestId)
+    async Task Delete(int traderequestId)
     {
-        var request = Requests.First(q => q.Id == requestId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {request.Payment}?");
+        var traderequest = TradeRequests.First(q => q.Id == traderequestId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete request?");
         if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.RequestsEndpoint}/{requestId}");
+            await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{traderequestId}");
             await OnInitializedAsync();
 
         }
@@ -155,13 +156,13 @@ else
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await js.InvokeVoidAsync("AddDataTable", "#requestsTable");
+        await js.InvokeVoidAsync("AddDataTable", "#outtraderequestsTable");
 
     }
 
     public void Dispose()
     {
-        js.InvokeVoidAsync("DataTablesDispose", "#requestsTable");
+        js.InvokeVoidAsync("DataTablesDispose", "#outtraderequestsTable");
     }
 
 }

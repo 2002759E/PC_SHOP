@@ -1,0 +1,92 @@
+﻿@page "/admintraderequests/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View</h3>
+
+<EditForm Model="@traderequest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled>
+        <div class="form-group">
+            <label>Requested Item:</label>
+            <div>
+                <InputSelect @bind-Value="traderequest.ListItemID" class="form-control">
+                    <option value="">--Select Item --</option>
+                    @if (ListItems != null)
+                    {
+                        foreach (var listItem in ListItems)
+                        {
+
+                            @if (Items != null)
+                            {
+                                foreach (var item in Items)
+                                {
+                                    if (listItem.ItemID == item.Id)
+                                    {
+                                        <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => traderequest.ListItemID)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Item Price($):</label>
+            <div>
+                
+                    @if (ListItems != null)
+                    {
+                        foreach (var listItem in ListItems)
+                        {
+                            if (@traderequest.ListItemID == @listItem.Id)
+                            {
+                                <InputNumber @bind-Value="@listItem.Price" class="form-control" />
+                                <ValidationMessage For="@(() => listItem.Price)" />
+                            }
+                        }
+
+                    }
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Item for trade:</label>
+            <div>
+                <InputSelect @bind-Value="traderequest.ItemID" class="form-control">
+                    <option value="">--Select Item --</option>
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => traderequest.ItemID)" />
+            </div>
+        </div>
+    </fieldset>
+    <BackToList Target="admintraderequests" />
+
+</EditForm>
+
+@code {
+    [Parameter] public int id { get; set; }
+    TradeRequest traderequest = new TradeRequest();
+    protected async override Task OnParametersSetAsync()
+    {
+        traderequest = await _client.GetFromJsonAsync<TradeRequest>($"{Endpoints.TradeRequestsEndpoint}/{id}");
+    }
+
+    private IList<Item> Items;
+    private IList<ListItem> ListItems;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+    }
+}

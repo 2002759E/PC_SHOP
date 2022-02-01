@@ -16,9 +16,9 @@ namespace PC_SHOP.Server.IRepository
         IGenericRepository<Condition> Conditions { get; }
         IGenericRepository<Item> Items { get; }
         IGenericRepository<ListItem> ListItems { get; }
-        IGenericRepository<Offer> Offers { get; }
+        IGenericRepository<PurchaseRequest> PurchaseRequests { get; }
         IGenericRepository<Payment> Payments { get; }
-        IGenericRepository<Request> Requests { get; }
+        IGenericRepository<TradeRequest> TradeRequests { get; }
         IGenericRepository<Review> Reviews { get; }
     }
 }

@@ -1,12 +1,11 @@
 ﻿
-using CarRentalManagement.Shared.Domain;
+using PC_SHOP.Shared.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PC_SHOP.Server.Data;
 using PC_SHOP.Server.IRepository;
 using PC_SHOP.Server.Models;
-using PC_SHOP.Shared.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +22,9 @@ namespace PC_SHOP.Server.Repository
         private IGenericRepository<Condition> _conditions;
         private IGenericRepository<Item> _items;
         private IGenericRepository<ListItem> _listitems;
-        private IGenericRepository<Offer> _offers;
+        private IGenericRepository<PurchaseRequest> _purchaserequests;
         private IGenericRepository<Payment> _payments;
-        private IGenericRepository<Request> _requests;
+        private IGenericRepository<TradeRequest> _traderequests;
         private IGenericRepository<Review> _reviews;
 
         private UserManager<ApplicationUser> _userManager;
@@ -46,12 +45,12 @@ namespace PC_SHOP.Server.Repository
             => _items ??= new GenericRepository<Item>(_context);
         public IGenericRepository<ListItem> ListItems
             => _listitems ??= new GenericRepository<ListItem>(_context);
-        public IGenericRepository<Offer> Offers
-            => _offers ??= new GenericRepository<Offer>(_context);
+        public IGenericRepository<PurchaseRequest> PurchaseRequests
+            => _purchaserequests ??= new GenericRepository<PurchaseRequest>(_context);
         public IGenericRepository<Payment> Payments
             => _payments ??= new GenericRepository<Payment>(_context);
-        public IGenericRepository<Request> Requests
-            => _requests ??= new GenericRepository<Request>(_context);
+        public IGenericRepository<TradeRequest> TradeRequests
+            => _traderequests ??= new GenericRepository<TradeRequest>(_context);
         public IGenericRepository<Review> Reviews
             => _reviews ??= new GenericRepository<Review>(_context);
 

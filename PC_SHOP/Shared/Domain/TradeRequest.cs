@@ -1,4 +1,4 @@
-﻿using CarRentalManagement.Shared.Domain;
+﻿using PC_SHOP.Shared.Domain;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace PC_SHOP.Shared.Domain
 {
-    public class Request : BaseDomainModel
+    public class TradeRequest : BaseDomainModel
     {
+
         [Required]
-        public int? OfferID { get; set; }
-        public virtual Offer Offer { get; set; }
-        public int? PaymentID { get; set; }
-        public virtual Payment Payment { get; set; }
         public int? ItemID { get; set; }
         public virtual Item Item { get; set; }
         [Required]

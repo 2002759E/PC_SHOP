@@ -1,0 +1,23 @@
+﻿@page "/outtraderequests/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="EditTradeRequest" traderequest="traderequest" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    TradeRequest traderequest = new TradeRequest();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        traderequest = await _client.GetFromJsonAsync<TradeRequest>($"{Endpoints.TradeRequestsEndpoint}/{id}");
+    }
+
+    async Task EditTradeRequest()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.TradeRequestsEndpoint}/{id}", traderequest);
+        _navManager.NavigateTo("/outtraderequests/");
+    }
+}

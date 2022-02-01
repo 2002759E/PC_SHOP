@@ -1,4 +1,4 @@
-﻿using CarRentalManagement.Shared.Domain;
+﻿using PC_SHOP.Shared.Domain;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

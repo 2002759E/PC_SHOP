@@ -17,6 +17,6 @@ namespace PC_SHOP.Shared.Domain
         [Required]
         public int? ListItemID { get; set; }
         public virtual ListItem ListItem { get; set; }
-        
+
     }
 }

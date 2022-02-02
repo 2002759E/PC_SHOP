@@ -33,51 +33,70 @@ else
             {
                 if (traderequest.ListItem.CreatedBy == @_currentUserName)
                 {
-                    <tr>
-                        <td>@traderequest.CreatedBy</td>
-                        @if (ListItems != null)
+            <tr>
+                <td>@traderequest.CreatedBy</td>
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@traderequest.ListItemID == listItem.Id)
                         {
-                            foreach (var listItem in ListItems)
+                            @if (Items != null)
                             {
-                                if (@traderequest.ListItemID == listItem.Id)
+                                foreach (var item in Items)
                                 {
-                                    @if (Items != null)
+                                    if (@traderequest.ListItem.ItemID == item.Id)
                                     {
-                                        foreach (var item in Items)
-                                        {
-                                            if (@traderequest.ListItem.ItemID == item.Id)
-                                            {    
-                                                <td>@item.Name</td>
+                                        <td>@item.Name</td>
 
-                                            }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@traderequest.ListItemID == listItem.Id)
+                        {
+                            <td>@listItem.Price</td>
+                        }
+                    }
+                }
+                <td>@traderequest.Item.Name</td>
+                <td>
+                    <a href="/intraderequests/view/@traderequest.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    @if (ListItems != null)
+                    {
+                        foreach (var listItem in ListItems)
+                        {
+                            if (@traderequest.ListItemID == listItem.Id)
+                            {
+                                @if (Items != null)
+                                {
+                                    foreach (var item in Items)
+                                    {
+                                        if (@traderequest.ListItem.ItemID == item.Id)
+                                        {
+                                        <a href="/intraderequests/accept/@item.Id/@traderequest.Id/@listItem.Id" class="btn btn-success">
+                                            <span class="oi oi-circle-check"></span>
+                                        </a>
+
                                         }
                                     }
                                 }
                             }
                         }
-                        @if (ListItems != null)
-                        {
-                            foreach (var listItem in ListItems)
-                            {
-                                if (@traderequest.ListItemID == listItem.Id)
-                                {
-                                    <td>@listItem.Price</td>
-                                }
-                            }
-                        }
-                        <td>@traderequest.Item.Name</td>
-                        <td>
-                            <a href="/intraderequests/view/@traderequest.Id" class="btn btn-primary">
-                                <span class="oi oi-book"></span>
-                            </a>
-                            <a href="/intraderequests/accept/@traderequest.Id" class="btn btn-success">
-                                <span class="oi oi-circle-check"></span>
-                            </a>
-                            <button class="btn btn-danger" @onclick="@(()=>Delete(traderequest.Id))">
-                                <span class="oi oi-circle-x"></span>
-                            </button>
-                        </td>
-                    </tr>
+                    }
+                    <button class="btn btn-danger" @onclick="@(()=>Delete(traderequest.Id))">
+                        <span class="oi oi-circle-x"></span>
+                    </button>
+                    </td>
+                </tr>
                 }
             }
         </tbody>

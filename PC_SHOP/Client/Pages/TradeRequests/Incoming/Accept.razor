@@ -1,0 +1,105 @@
+﻿@page "/intraderequests/accept/{itemid:int}/{reqid:int}/{listid:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Accept Request</h3>
+<form>
+    <EditForm Model="@item" OnValidSubmit="EditItem">
+        
+        <fieldset disabled>
+            <div class="form-group">
+                <label>Sell to:</label>
+                <div>
+                    <InputText @bind-Value="@item.CreatedBy" class="form-control" />
+                </div>
+            </div>
+        </fieldset>
+    </EditForm>
+    <EditForm Model="@listItem" OnValidSubmit="EditItem">
+        <fieldset disabled>
+            <div class="form-group">
+                <label>Sell to:</label>
+                <div>
+                    <InputText @bind-Value="@listItem.CreatedBy" class="form-control" />
+                </div>
+            </div>
+        </fieldset>
+    </EditForm>
+    <button class="btn btn-primary btn-block" @onclick="@(() => submitforms())">
+        Confirm
+    </button>
+    <BackToList Target="inpurchaserequests" />
+</form>
+@code {
+    [Parameter] public int itemid { get; set; }
+    [Parameter] public int reqid { get; set; }
+    [Parameter] public int listid { get; set; }
+
+    public string save { get; set; }
+
+    Item item = new Item();
+    ListItem listItem = new ListItem();
+    TradeRequest traderequest = new TradeRequest();
+
+    private IList<TradeRequest> tr;
+    private IList<PurchaseRequest> pr;
+    private IList<ListItem> li;
+    private IList<Item> i;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{itemid}");
+        traderequest = await _client.GetFromJsonAsync<TradeRequest>($"{Endpoints.TradeRequestsEndpoint}/{reqid}");
+        listItem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{listid}");
+
+
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        tr = await _client.GetFromJsonAsync<List<TradeRequest>>($"{Endpoints.TradeRequestsEndpoint}");
+        pr = await _client.GetFromJsonAsync<List<PurchaseRequest>>($"{Endpoints.PurchaseRequestsEndpoint}");
+        li = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        i = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+    }
+
+    async Task Clean()
+    {
+        foreach (var tr in tr)
+        {
+            if (tr.ListItemID == traderequest.ListItemID)
+            {
+                await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{tr.Id}");
+            }
+        }
+        foreach (var pr in pr)
+        {
+            if (pr.ListItemID == traderequest.ListItemID)
+            {
+                await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{pr.Id}");
+            }
+        }
+        foreach (var li in li)
+        {
+            if (li.Id == traderequest.ListItemID)
+            {
+                await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{li.Id}");
+            }
+        }
+
+        EditItem();
+    }
+
+    async Task EditItem()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid}", item);
+        _navManager.NavigateTo("/intraderequests/");
+    }
+
+    private void submitforms()
+    {
+        document.getElementById("form1").submit();
+        <textarea>document.getElementById("form2").submit();</textarea>
+    }
+
+}

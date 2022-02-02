@@ -69,6 +69,12 @@ else
 
 }
 
+@if (cascaded)
+{
+    <p style="color:red">Unable to delete item. Please clear all requests related to item first.</p>
+    cascaded = false;
+}
+
 @code {
 
     private List<Item> Items;
@@ -77,6 +83,8 @@ else
     private string _currentUserId;
     private string _currentUserName;
     private string _currentUserRole;
+
+    public bool cascaded { get; set; } = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -124,6 +132,14 @@ else
             await _client.DeleteAsync($"{Endpoints.ItemsEndpoint}/{itemId}");
             await OnInitializedAsync();
 
+        }
+
+        foreach (var i in Items)
+        {
+            if (i.Id == itemId)
+            {
+                cascaded = true;
+            }
         }
     }
 

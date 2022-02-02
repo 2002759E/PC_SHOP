@@ -40,59 +40,65 @@ else
         <tbody>
             @foreach (var listitem in ListItems)
             {
-                
-            <tr>
-                <td>@listitem.Item.Name</td>
-                <td>@listitem.Item.Description</td>
-                <td>@listitem.Price</td>
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
-                    {
-                        if (@listitem.ItemID == item.Id)
-                        {
-                            <td>@item.Condition.Name</td>
-                        }
-                    }
-                }
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
-                    {
-                        if (@listitem.ItemID == item.Id)
-                        {
-                            <td>@item.Brand.Name</td>
-                        }
-                    }
-                }
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
-                    {
-                        if (@listitem.ItemID == item.Id)
-                        {
-                            <td>@item.Category.Name</td>
-                        }
-                    }
-                }
-                <td>@listitem.CreatedBy</td>
-                <td>
 
-                    <a href="/adminlistitems/view/@listitem.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/adminlistitems/editprice/@listitem.Id" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
-            </tr>
-                
+                <tr>
+                    <td>@listitem.Item.Name</td>
+                    <td>@listitem.Item.Description</td>
+                    <td>@listitem.Price</td>
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Condition.Name</td>
+                            }
+                        }
+                    }
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Brand.Name</td>
+                            }
+                        }
+                    }
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Category.Name</td>
+                            }
+                        }
+                    }
+                    <td>@listitem.CreatedBy</td>
+                    <td>
+
+                        <a href="/adminlistitems/view/@listitem.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/adminlistitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+
             }
         </tbody>
     </table>
+}
+
+@if (cascaded)
+{
+    <p style="color:red">Unable to delete lisitng. Please clear all requests related to listing first.</p>
+    cascaded = false;
 }
 
 @code {
@@ -104,6 +110,8 @@ else
     private string _currentUserId;
     private string _currentUserName;
     private string _currentUserRole;
+
+    public bool cascaded { get; set; } = false;
 
 
     protected async override Task OnInitializedAsync()
@@ -153,6 +161,14 @@ else
             await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listitemId}");
             await OnInitializedAsync();
 
+        }
+
+        foreach (var li in ListItems)
+        {
+            if (li.Id == listitemId)
+            {
+                cascaded = true;
+            }
         }
     }
 

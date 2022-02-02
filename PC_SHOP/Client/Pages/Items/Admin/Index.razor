@@ -40,34 +40,40 @@ else
         <tbody>
             @foreach (var item in Items)
             {
-                
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-                <td>@item.Condition.Name</td>
-                <td>@item.Brand.Name</td>
-                <td>@item.Category.Name</td>
-                <td>@item.CreatedBy</td>
-                <td>
-                    <a href="/adminitems/view/@item.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/adminitems/sell/@item.Id" class="btn btn-warning">
-                        <span class="oi oi-dollar"></span>
-                    </a>
-                    <a href="/adminitems/edit/@item.Id" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(()=>Delete (item.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
-            </tr>
-                
+
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td>@item.Condition.Name</td>
+                    <td>@item.Brand.Name</td>
+                    <td>@item.Category.Name</td>
+                    <td>@item.CreatedBy</td>
+                    <td>
+                        <a href="/adminitems/view/@item.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/adminitems/sell/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-dollar"></span>
+                        </a>
+                        <a href="/adminitems/edit/@item.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (item.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+
             }
         </tbody>
     </table>
 
+}
+
+@if (cascaded)
+{
+    <p style="color:red">Unable to delete item. Please clear all requests related to item first.</p>
+    cascaded = false;
 }
 
 @code {
@@ -78,6 +84,8 @@ else
     private string _currentUserId;
     private string _currentUserName;
     private string _currentUserRole;
+
+    public bool cascaded { get; set; } = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -125,6 +133,14 @@ else
             await _client.DeleteAsync($"{Endpoints.ItemsEndpoint}/{itemId}");
             await OnInitializedAsync();
 
+        }
+
+        foreach (var i in Items)
+        {
+            if (i.Id == itemId)
+            {
+                cascaded = true;
+            }
         }
     }
 

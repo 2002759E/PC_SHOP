@@ -80,7 +80,7 @@ else
                             <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
                             </a>
-                            <a href="/listitems/editprice/@listitem.Id" class="btn btn-warning">
+                            <a href="/listitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
                                 <span class="oi oi-pencil"></span>
                             </a>
                             <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">

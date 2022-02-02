@@ -1,44 +1,57 @@
-﻿@page "/intraderequests/accept/{itemid:int}/{reqid:int}/{listid:int}"
+﻿@page "/intraderequests/accept/{itemid:int}/{reqid:int}/{itemid2:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 
 <h3>Accept Request</h3>
-<form>
-    <EditForm Model="@item" OnValidSubmit="EditItem">
-        
-        <fieldset disabled>
-            <div class="form-group">
-                <label>Sell to:</label>
-                <div>
-                    <InputText @bind-Value="@item.CreatedBy" class="form-control" />
-                </div>
-            </div>
-        </fieldset>
-    </EditForm>
-    <EditForm Model="@listItem" OnValidSubmit="EditItem">
-        <fieldset disabled>
-            <div class="form-group">
-                <label>Sell to:</label>
-                <div>
-                    <InputText @bind-Value="@listItem.CreatedBy" class="form-control" />
-                </div>
-            </div>
-        </fieldset>
-    </EditForm>
-    <button class="btn btn-primary btn-block" @onclick="@(() => submitforms())">
-        Confirm
-    </button>
-    <BackToList Target="inpurchaserequests" />
-</form>
+
+<EditForm Model="@item" OnValidSubmit="EditItem">
+    <div class="form-group">
+        <label>give to:</label>
+        <div>
+            <InputText @bind-Value="@item.CreatedBy" class="form-control" />
+        </div>
+    </div>
+    @if (!Lock)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            Confirm item to be sent
+        </button>
+    }
+</EditForm>
+
+<EditForm Model="@item2" OnValidSubmit="Clean">
+    <div class="form-group">
+        <label>Me:</label>
+        <div>
+            <InputText @bind-Value="@item2.CreatedBy" class="form-control" />
+        </div>
+    </div>
+    @if (Lock)
+        {
+            <button type="submit" class="btn btn-success btn-block">
+                Confirm item to be recieved
+            </button>
+        }
+
+</EditForm>
+
+@if (!Lock)
+{
+    <BackToList Target="intraderequests" />
+}
+
+
 @code {
     [Parameter] public int itemid { get; set; }
     [Parameter] public int reqid { get; set; }
-    [Parameter] public int listid { get; set; }
+    [Parameter] public int itemid2 { get; set; }
+
+    public bool Lock { get; set; } = false;
 
     public string save { get; set; }
 
     Item item = new Item();
-    ListItem listItem = new ListItem();
+    Item item2 = new Item();
     TradeRequest traderequest = new TradeRequest();
 
     private IList<TradeRequest> tr;
@@ -49,9 +62,14 @@
     protected async override Task OnParametersSetAsync()
     {
         item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{itemid}");
+        item2 = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{itemid2}");
         traderequest = await _client.GetFromJsonAsync<TradeRequest>($"{Endpoints.TradeRequestsEndpoint}/{reqid}");
-        listItem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{listid}");
 
+        save = item.CreatedBy;
+
+        item.CreatedBy = traderequest.CreatedBy;
+
+        item2.CreatedBy = save;
 
     }
 
@@ -87,19 +105,20 @@
             }
         }
 
-        EditItem();
+        EditItem2();
     }
 
     async Task EditItem()
     {
         await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid}", item);
+        Lock = true;
+    }
+
+    async Task EditItem2()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid2}", item2);
         _navManager.NavigateTo("/intraderequests/");
     }
 
-    private void submitforms()
-    {
-        document.getElementById("form1").submit();
-        <textarea>document.getElementById("form2").submit();</textarea>
-    }
 
 }

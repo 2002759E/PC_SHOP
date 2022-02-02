@@ -13,9 +13,11 @@ namespace PC_SHOP.Shared.Domain
 
         [Required]
         public int? ItemID { get; set; }
+        [ValidateComplexType]
         public virtual Item Item { get; set; }
         [Required]
         public int? ListItemID { get; set; }
+        [ValidateComplexType]
         public virtual ListItem ListItem { get; set; }
 
     }

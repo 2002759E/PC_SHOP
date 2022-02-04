@@ -83,6 +83,19 @@ else
                     <a href="/adminpurchaserequests/edit/@request.Id" class="btn btn-warning">
                         <span class="oi oi-pencil"></span>
                     </a>
+                    <a>
+                        @foreach (var item in Items)
+                        {
+                            if (@request.ListItem.ItemID == item.Id)
+                            {
+
+                                <a href="/adminpurchaserequests/accept/@item.Id/@request.Id" class="btn btn-success">
+                                    <span class="oi oi-circle-check"></span>
+                                </a>
+
+                            }
+                        }
+                    </a>
                     <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
                         <span class="oi oi-delete"></span>
                     </button>

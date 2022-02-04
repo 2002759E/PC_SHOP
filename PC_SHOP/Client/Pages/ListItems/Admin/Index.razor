@@ -84,6 +84,12 @@ else
                         <a href="/adminlistitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
                             <span class="oi oi-pencil"></span>
                         </a>
+                        <a href="/adminlistitems/trade/@listitem.Id" class="btn btn-info">
+                            <span class="oi oi-transfer"></span>
+                        </a>
+                        <a href="/adminlistitems/purchase/@listitem.Id" class="btn btn-success">
+                            <span class="oi oi-dollar"></span>
+                        </a>
                         <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
                             <span class="oi oi-delete"></span>
                         </button>
@@ -161,6 +167,10 @@ else
             await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listitemId}");
             await OnInitializedAsync();
 
+        }
+        else
+        {
+            return;
         }
 
         foreach (var li in ListItems)

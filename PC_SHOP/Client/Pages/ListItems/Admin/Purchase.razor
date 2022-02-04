@@ -1,22 +1,22 @@
-﻿@page "/alllistitems/trade/{id:int}"
+﻿@page "/adminlistitems/purchase/{id:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
-@attribute [Authorize]
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Create Trade Request</h3>
+<h3>Create Purchase Request</h3>
 <hr />
 <br />
 
-<EditForm Model="@traderequest" OnValidSubmit="CreateTradeRequest">
+<EditForm Model="@purchaserequest" OnValidSubmit="CreatePurchaseRequest">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <fieldset disabled>
         <div class="form-group">
+
             <label>Requested Item:</label>
             <div>
-                <InputSelect @bind-Value="traderequest.ListItemID" class="form-control">
+                <InputSelect @bind-Value="purchaserequest.ListItemID" class="form-control">
 
                     @if (ListItems != null)
                     {
@@ -33,54 +33,55 @@
                                         {
                                             <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
                                         }
-
                                     }
                                 }
                             }
                         }
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => traderequest.ListItemID)" />
+                <ValidationMessage For="@(() => purchaserequest.ListItemID)" />
             </div>
         </div>
     </fieldset>
     <div class="form-group">
-        <label>Item for trade:</label>
+        <label>Offered Price:</label>
         <div>
-            <InputSelect @bind-Value="traderequest.ItemID" class="form-control">
-                <option value="">--Select Item --</option>
-                @if (Items != null)
+            <InputNumber @bind-Value="@purchaserequest.Price" class="form-control" />
+            <ValidationMessage For="@(() => purchaserequest.Price)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Payment Method:</label>
+        <div>
+            <InputSelect @bind-Value="purchaserequest.PaymentID" class="form-control">
+                <option value="">--Payment Method--</option>
+                @if (Payments != null)
                 {
-                    foreach (var item in Items)
+                    foreach (var payment in Payments)
                     {
-                        if (@item.CreatedBy == @_currentUserName)
-                        {
-                            <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
-                        }
-
+                        <option value="@payment.Id">@payment.Name</option>
                     }
                 }
             </InputSelect>
-            <ValidationMessage For="@(() => traderequest.ItemID)" />
+            <ValidationMessage For="@(() => purchaserequest.PaymentID)" />
         </div>
     </div>
 
-    @if (exist)
-    {
-        <p style="color:red">Item already offered in another request! Offer another item.</p>
-        exist = false;
-    }
 
 
     <button type="submit" class="btn btn-success btn-block">
         Create Request
     </button>
 
-    <BackToList Target="alllistitems" />
+    <BackToList Target="adminlistitems" />
 
 </EditForm>
 
 @code {
+
+    [Parameter] public int id { get; set; }
+
+    PurchaseRequest purchaserequest = new PurchaseRequest();
 
     private List<AppUser> AppUsers;
     private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
@@ -88,21 +89,16 @@
     private string _currentUserName;
     private string _currentUserRole;
 
-    [Parameter] public int id { get; set; }
-
-    public bool exist { get; set; } = false;
-
-    TradeRequest traderequest = new TradeRequest();
-
     private IList<Item> Items;
+    private IList<Payment> Payments;
     private IList<ListItem> ListItems;
-    private IList<TradeRequest> tradeRequests;
 
     protected async override Task OnInitializedAsync()
     {
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+        Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
-        tradeRequests = await _client.GetFromJsonAsync<List<TradeRequest>>($"{Endpoints.TradeRequestsEndpoint}");
+
 
         AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -137,23 +133,10 @@
         }
     }
 
-    private async Task CreateTradeRequest()
+    private async Task CreatePurchaseRequest()
     {
-        foreach (var request in tradeRequests)
-        {
-            if (request.ItemID == traderequest.ItemID)
-            {
-                exist = true;
-                break;
-            }
-        }
-        if (!exist)
-        {
-            await _client.PostAsJsonAsync(Endpoints.TradeRequestsEndpoint, traderequest);
-            _navManager.NavigateTo("/alllistitems/");
-        }
-     
-
+        await _client.PostAsJsonAsync(Endpoints.PurchaseRequestsEndpoint, purchaserequest);
+        _navManager.NavigateTo("/adminlistitems/");
     }
 
     ListItem listitem = new ListItem();
@@ -162,7 +145,7 @@
     {
         listitem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{id}");
 
-        traderequest.ListItemID = listitem.Id;
-
+        purchaserequest.ListItemID = listitem.Id;
     }
 }
+

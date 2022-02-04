@@ -81,6 +81,30 @@ else
                     <a href="/admintraderequests/edit/@traderequest.Id" class="btn btn-warning">
                         <span class="oi oi-pencil"></span>
                     </a>
+                    <a>
+                        @if (ListItems != null)
+                        {
+                            foreach (var listItem in ListItems)
+                            {
+                                if (@traderequest.ListItemID == listItem.Id)
+                                {
+                                    @if (Items != null)
+                                    {
+                                        foreach (var item in Items)
+                                        {
+                                            if (@traderequest.ListItem.ItemID == item.Id)
+                                            {
+                                                <a href="/adminintraderequests/accept/@item.Id/@traderequest.Id/@traderequest.ItemID/@traderequest.ListItemID" class="btn btn-success">
+                                                    <span class="oi oi-circle-check"></span>
+                                                </a>
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    </a>
                     <button class="btn btn-danger" @onclick="@(()=>Delete (traderequest.Id))">
                         <span class="oi oi-delete"></span>
                     </button>

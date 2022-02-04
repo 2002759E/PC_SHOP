@@ -52,7 +52,7 @@ else
                         <a href="/adminitems/view/@item.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
-                        <a href="/adminitems/sell/@item.Id" class="btn btn-warning">
+                        <a href="/adminitems/sell/@item.Id" class="btn btn-info">
                             <span class="oi oi-dollar"></span>
                         </a>
                         <a href="/adminitems/edit/@item.Id" class="btn btn-warning">
@@ -133,6 +133,10 @@ else
             await _client.DeleteAsync($"{Endpoints.ItemsEndpoint}/{itemId}");
             await OnInitializedAsync();
 
+        }
+        else
+        {
+            return;
         }
 
         foreach (var i in Items)

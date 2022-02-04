@@ -1,4 +1,4 @@
-﻿@page "/adminlistitems/create/"
+﻿@page "/adminitems/sell/{id:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 @using System.Security.Claims
@@ -11,22 +11,26 @@
 <EditForm Model="@listitem" OnValidSubmit="checkexist">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="form-group">
-        <label>Item:</label>
-        <div>
-            <InputSelect @bind-Value="listitem.ItemID" class="form-control">
-                <option value="">--Select Item--</option>
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
+    <fieldset disabled>
+        <div class="form-group">
+            <label>Item:</label>
+            <div>
+                <InputSelect @bind-Value="listitem.ItemID" class="form-control">
+                    @if (Items != null)
                     {
-                        <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                        foreach (var Item in Items)
+                        {
+                            if (@Item.Id == item.Id)
+                            {
+                                <option value="@Item.Id">Name: @Item.Name   Condition: @Item.Condition.Name   Brand: @Item.Brand.Name   Category: @Item.Category.Name</option>
+                            }
+                        }
                     }
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => listitem.ItemID)" />
+                </InputSelect>
+                <ValidationMessage For="@(() => listitem.ItemID)" />
+            </div>
         </div>
-    </div>
+    </fieldset>
     <div class="form-group">
         <label>Price($):</label>
         <div>
@@ -42,7 +46,7 @@
     <button type="submit" class="btn btn-success btn-block">
         List Item
     </button>
-    <BackToList Target="adminlistitems" />
+    <BackToList Target="adminitems" />
 </EditForm>
 
 @code {
@@ -119,7 +123,17 @@
     {
 
         await _client.PostAsJsonAsync(Endpoints.ListItemsEndpoint, listitem);
-        _navManager.NavigateTo("/adminlistitems/");
+        _navManager.NavigateTo("/adminitems/");
 
+    }
+
+    [Parameter] public int id { get; set; }
+    Item item = new Item();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{id}");
+
+        listitem.ItemID = item.Id;
     }
 }

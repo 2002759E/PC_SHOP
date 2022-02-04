@@ -1,45 +1,49 @@
-﻿@page "/outtraderequests/create/"
+﻿@page "/adminlistitems/trade/{id:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 @attribute [Authorize]
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-
-<h3>Create Requests</h3>
+<h3>Create Trade Request</h3>
 <hr />
 <br />
 
 <EditForm Model="@traderequest" OnValidSubmit="CreateTradeRequest">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <fieldset disabled>
+        <div class="form-group">
+            <label>Requested Item:</label>
+            <div>
+                <InputSelect @bind-Value="traderequest.ListItemID" class="form-control">
 
-    <div class="form-group">
-        <label>Requested Item:</label>
-        <div>
-            <InputSelect @bind-Value="traderequest.ListItemID" class="form-control">
-                <option value="">--Select Item --</option>
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
+                    @if (ListItems != null)
                     {
-
-                        @if (Items != null)
+                        foreach (var listItem in ListItems)
                         {
-                            foreach (var item in Items)
+
+                            @if (Items != null)
                             {
-                                if (listItem.ItemID == item.Id)
+                                foreach (var item in Items)
                                 {
-                                    <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                    if (listItem.ItemID == item.Id)
+                                    {
+                                        if (listItem.Id == listitem.Id)
+                                        {
+                                            <option value="@listItem.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                                        }
+
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => traderequest.ListItemID)" />
+                </InputSelect>
+                <ValidationMessage For="@(() => traderequest.ListItemID)" />
+            </div>
         </div>
-    </div>
+    </fieldset>
     <div class="form-group">
         <label>Item for trade:</label>
         <div>
@@ -49,12 +53,10 @@
                 {
                     foreach (var item in Items)
                     {
-
                         if (@item.CreatedBy == @_currentUserName)
                         {
                             <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
                         }
-
 
                     }
                 }
@@ -69,12 +71,12 @@
         exist = false;
     }
 
-    
+
     <button type="submit" class="btn btn-success btn-block">
-        Create Trade Request
+        Create Request
     </button>
 
-    <BackToList Target="outtraderequests" />
+    <BackToList Target="adminlistitems" />
 
 </EditForm>
 
@@ -86,9 +88,11 @@
     private string _currentUserName;
     private string _currentUserRole;
 
-    TradeRequest traderequest = new TradeRequest();
+    [Parameter] public int id { get; set; }
 
     public bool exist { get; set; } = false;
+
+    TradeRequest traderequest = new TradeRequest();
 
     private IList<Item> Items;
     private IList<ListItem> ListItems;
@@ -146,8 +150,19 @@
         if (!exist)
         {
             await _client.PostAsJsonAsync(Endpoints.TradeRequestsEndpoint, traderequest);
-            _navManager.NavigateTo("/outtraderequests/");
+            _navManager.NavigateTo("/adminlistitems/");
         }
+     
+
+    }
+
+    ListItem listitem = new ListItem();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        listitem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{id}");
+
+        traderequest.ListItemID = listitem.Id;
 
     }
 }

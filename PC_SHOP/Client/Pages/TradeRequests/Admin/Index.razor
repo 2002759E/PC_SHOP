@@ -5,6 +5,7 @@
 @implements IDisposable
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpInterceptorService _interceptor
 
 
 <h3>All Trade Requests</h3>
@@ -39,78 +40,78 @@ else
         <tbody>
             @foreach (var traderequest in TradeRequests)
             {
-               
-            <tr>
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
-                    {
-                        if (@traderequest.ListItemID == listItem.Id)
-                        {
-                            @if (Items != null)
-                            {
-                                foreach (var item in Items)
-                                {
-                                    if (@traderequest.ListItem.ItemID == item.Id)
-                                    {
-                                        <td>@item.CreatedBy</td>
-                                        <td>@item.Name</td>
 
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
+                <tr>
+                    @if (ListItems != null)
                     {
-                        if (@traderequest.ListItemID == listItem.Id)
+                        foreach (var listItem in ListItems)
                         {
-                            <td>@listItem.Price</td>
-                        }
-                    }
-                }
-                <td>@traderequest.Item.Name</td>
-                <td>@traderequest.CreatedBy</td>
-                <td>
-                    <a href="/admintraderequests/view/@traderequest.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/admintraderequests/edit/@traderequest.Id" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <a>
-                        @if (ListItems != null)
-                        {
-                            foreach (var listItem in ListItems)
+                            if (@traderequest.ListItemID == listItem.Id)
                             {
-                                if (@traderequest.ListItemID == listItem.Id)
+                                @if (Items != null)
                                 {
-                                    @if (Items != null)
+                                    foreach (var item in Items)
                                     {
-                                        foreach (var item in Items)
+                                        if (@traderequest.ListItem.ItemID == item.Id)
                                         {
-                                            if (@traderequest.ListItem.ItemID == item.Id)
-                                            {
-                                                <a href="/adminintraderequests/accept/@item.Id/@traderequest.Id/@traderequest.ItemID/@traderequest.ListItemID" class="btn btn-success">
-                                                    <span class="oi oi-circle-check"></span>
-                                                </a>
+                                            <td>@item.CreatedBy</td>
+                                            <td>@item.Name</td>
 
-                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(()=>Delete (traderequest.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
-            </tr>
-                
+                    }
+                    @if (ListItems != null)
+                    {
+                        foreach (var listItem in ListItems)
+                        {
+                            if (@traderequest.ListItemID == listItem.Id)
+                            {
+                                <td>@listItem.Price</td>
+                            }
+                        }
+                    }
+                    <td>@traderequest.Item.Name</td>
+                    <td>@traderequest.CreatedBy</td>
+                    <td>
+                        <a href="/admintraderequests/view/@traderequest.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/admintraderequests/edit/@traderequest.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <a>
+                            @if (ListItems != null)
+                            {
+                                foreach (var listItem in ListItems)
+                                {
+                                    if (@traderequest.ListItemID == listItem.Id)
+                                    {
+                                        @if (Items != null)
+                                        {
+                                            foreach (var item in Items)
+                                            {
+                                                if (@traderequest.ListItem.ItemID == item.Id)
+                                                {
+                                                    <a href="/adminintraderequests/accept/@item.Id/@traderequest.Id/@traderequest.ItemID/@traderequest.ListItemID" class="btn btn-success">
+                                                        <span class="oi oi-circle-check"></span>
+                                                    </a>
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (traderequest.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+
             }
         </tbody>
     </table>
@@ -130,6 +131,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        _interceptor.MonitorEvent();
         TradeRequests = await _client.GetFromJsonAsync<List<TradeRequest>>($"{Endpoints.TradeRequestsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
@@ -188,6 +190,7 @@ else
     public void Dispose()
     {
         js.InvokeVoidAsync("DataTablesDispose", "#traderequestsTable");
+        _interceptor.DisposeEvent();
     }
 
 }

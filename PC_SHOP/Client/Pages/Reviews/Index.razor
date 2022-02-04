@@ -3,6 +3,7 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 @implements IDisposable
+@inject HttpInterceptorService _interceptor
 
 <h3>Reviews</h3>
 <a href="/reviews/create" class="btn btn-secondary">
@@ -61,6 +62,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        _interceptor.MonitorEvent();
         Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
     }
 
@@ -88,5 +90,6 @@ else
     public void Dispose()
     {
         js.InvokeVoidAsync("DataTablesDispose", "#reviewsTable");
+        _interceptor.DisposeEvent();
     }
 }

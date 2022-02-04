@@ -5,6 +5,7 @@
 @implements IDisposable
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpInterceptorService _interceptor
 
 
 <h3>Incoming Purchase Requests</h3>
@@ -34,60 +35,60 @@ else
             {
                 if (request.ListItem.CreatedBy == @_currentUserName)
                 {
-            <tr>
-                <td>@request.CreatedBy</td>
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
-                    {
-                        if (@request.ListItemID == listItem.Id)
+                    <tr>
+                        <td>@request.CreatedBy</td>
+                        @if (ListItems != null)
                         {
-                            @if (Items != null)
+                            foreach (var listItem in ListItems)
                             {
-                                foreach (var item in Items)
+                                if (@request.ListItemID == listItem.Id)
                                 {
-                                    if (@request.ListItem.ItemID == item.Id)
+                                    @if (Items != null)
                                     {
-                                        <td>@item.Name</td>
+                                        foreach (var item in Items)
+                                        {
+                                            if (@request.ListItem.ItemID == item.Id)
+                                            {
+                                                <td>@item.Name</td>
 
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                }
-                @if (ListItems != null)
-                {
-                    foreach (var listItem in ListItems)
-                    {
-                        if (@request.ListItemID == listItem.Id)
+                        @if (ListItems != null)
                         {
-                            <td>@listItem.Price</td>
+                            foreach (var listItem in ListItems)
+                            {
+                                if (@request.ListItemID == listItem.Id)
+                                {
+                                    <td>@listItem.Price</td>
+                                }
+                            }
                         }
-                    }
-                }
-                <td>@request.Price</td>
-                <td>@request.Payment.Name</td>
-                <td>
-                    <a href="/inpurchaserequests/view/@request.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    @foreach (var item in Items)
-                    {
-                        if (@request.ListItem.ItemID == item.Id)
-                        {
-
-                            <a href="/inpurchaserequests/accept/@item.Id/@request.Id" class="btn btn-success">
-                                <span class="oi oi-circle-check"></span>
+                        <td>@request.Price</td>
+                        <td>@request.Payment.Name</td>
+                        <td>
+                            <a href="/inpurchaserequests/view/@request.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
                             </a>
+                            @foreach (var item in Items)
+                            {
+                                if (@request.ListItem.ItemID == item.Id)
+                                {
 
-                        }
-                    }
-                    <button class="btn btn-danger" @onclick="@(()=>Delete(@request.Id))">
-                        <span class="oi oi-circle-x"></span>
-                    </button>
-                </td>
-            </tr>
+                                    <a href="/inpurchaserequests/accept/@item.Id/@request.Id" class="btn btn-success">
+                                        <span class="oi oi-circle-check"></span>
+                                    </a>
+
+                                }
+                            }
+                            <button class="btn btn-danger" @onclick="@(()=>Delete(@request.Id))">
+                                <span class="oi oi-circle-x"></span>
+                            </button>
+                        </td>
+                    </tr>
                 }
             }
         </tbody>
@@ -108,6 +109,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        _interceptor.MonitorEvent();
         PurchaseRequests = await _client.GetFromJsonAsync<List<PurchaseRequest>>($"{Endpoints.PurchaseRequestsEndpoint}");
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
@@ -166,6 +168,7 @@ else
     public void Dispose()
     {
         js.InvokeVoidAsync("DataTablesDispose", "#inpurchaserequestsTable");
+        _interceptor.DisposeEvent();
     }
 
 }

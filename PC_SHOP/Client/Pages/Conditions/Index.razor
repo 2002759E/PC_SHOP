@@ -3,6 +3,7 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 @implements IDisposable
+@inject HttpInterceptorService _interceptor
 
 <h3>Conditions</h3>
 <a href="/Conditions/create" class="btn btn-secondary">
@@ -54,6 +55,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        _interceptor.MonitorEvent();
         Conditions = await _client.GetFromJsonAsync<List<Condition>>($"{Endpoints.ConditionsEndpoint}");
     }
 
@@ -78,6 +80,7 @@ else
     public void Dispose()
     {
         js.InvokeVoidAsync("DataTablesDispose", "#conditionsTable");
+        _interceptor.DisposeEvent();
     }
 
 }

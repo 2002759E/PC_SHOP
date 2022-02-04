@@ -3,6 +3,7 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 @implements IDisposable
+@inject HttpInterceptorService _interceptor
 
 
 <h3>Payment Methods</h3>
@@ -61,6 +62,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        _interceptor.MonitorEvent();
         Payments = await _client.GetFromJsonAsync<List<Payment>>($"{Endpoints.PaymentsEndpoint}");
     }
 
@@ -88,5 +90,6 @@ else
     public void Dispose()
     {
         js.InvokeVoidAsync("DataTablesDispose", "#paymentsTable");
+        _interceptor.DisposeEvent();
     }
 }

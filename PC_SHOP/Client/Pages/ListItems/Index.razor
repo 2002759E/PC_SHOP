@@ -5,6 +5,7 @@
 @implements IDisposable
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpInterceptorService _interceptor
 
 <h3>Listed Items</h3>
 
@@ -116,6 +117,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        _interceptor.MonitorEvent();
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
 
@@ -188,6 +190,7 @@ else
     public void Dispose()
     {
         js.InvokeVoidAsync("DataTablesDispose", "#listItemsTable");
+        _interceptor.DisposeEvent();
     }
 
 }

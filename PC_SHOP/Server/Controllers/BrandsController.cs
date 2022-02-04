@@ -28,7 +28,7 @@ namespace PC_SHOP.Server.Controllers
         [HttpGet]
 
         public async Task<IActionResult> GetBrands()
-        {
+        {           
             var Brands = await _unitOfWork.Brands.GetAll();
             return Ok(Brands);
         }

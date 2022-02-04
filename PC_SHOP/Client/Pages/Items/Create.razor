@@ -5,11 +5,87 @@
 <h3>Create Item</h3>
 <hr />
 <br />
+<EditForm Model="@item" OnValidSubmit="CreateItem">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-<FormComponent ButtonText="Create Items" item="item" OnValidSubmit="@CreateItem" />
+    <div class="form-group">
+        <label>Name:</label>
+        <div>
+            <InputText @bind-Value="@item.Name" class="form-control" />
+            <ValidationMessage For="@(() => item.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Description:</label>
+        <div>
+            <InputText @bind-Value="@item.Description" class="form-control" />
+            <ValidationMessage For="@(() => item.Description)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Condition:</label>
+        <div>
+            <InputSelect @bind-Value="item.ConditionID" class="form-control">
+                <option value="">--Select Condition--</option>
+                @if (Conditions != null)
+                {
+                    foreach (var condition in Conditions)
+                    {
+                        <option value="@condition.Id">@condition.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => item.ConditionID)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Brand:</label>
+        <div>
+            <InputSelect @bind-Value="item.BrandID" class="form-control">
+                <option value="">--Select Brand--</option>
+                @if (Brands != null)
+                {
+                    foreach (var brand in Brands)
+                    {
+                        <option value="@brand.Id">@brand.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => item.BrandID)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Category:</label>
+        <div>
+            <InputSelect @bind-Value="item.CategoryID" class="form-control">
+                <option value="">--Select Category--</option>
+                @if (Categories != null)
+                {
+                    foreach (var category in Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>}
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => item.CategoryID)" />
+        </div>
+    </div>
+    <div>
+        Quantity: <input type="number" @bind-value="quantity" class="form-control" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success btn-block">
+        Create Item
+    </button>
+    <BackToList Target="items" />
+
+</EditForm>
 
 @code {
     Item item = new Item();
+
+    public int quantity { get; set; } = 1;
+    public int c { get; set; } = 0;
 
     private IList<Category> Categories;
     private IList<Brand> Brands;
@@ -24,7 +100,14 @@
 
     private async Task CreateItem()
     {
-        await _client.PostAsJsonAsync(Endpoints.ItemsEndpoint, item);
+
+        while (c < quantity)
+        {
+            c = c + 1;
+            await _client.PostAsJsonAsync(Endpoints.ItemsEndpoint, item);
+
+        }
+        c = 0;
         _navManager.NavigateTo("/items/");
     }
 }

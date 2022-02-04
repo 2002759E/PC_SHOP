@@ -27,12 +27,15 @@
     <BackToList Target="inpurchaserequests" />
 </EditForm>
 
+
 @code {
     [Parameter] public int itemid { get; set; }
     [Parameter] public int reqid { get; set; }
 
     Item item = new Item();
     PurchaseRequest purchaserequest = new PurchaseRequest();
+
+    public string test { get; set; }
 
     private IList<TradeRequest> tr;
     private IList<PurchaseRequest> pr;
@@ -44,6 +47,7 @@
         purchaserequest = await _client.GetFromJsonAsync<PurchaseRequest>($"{Endpoints.PurchaseRequestsEndpoint}/{reqid}");
 
         item.CreatedBy = purchaserequest.CreatedBy;
+
     }
 
     protected async override Task OnInitializedAsync()

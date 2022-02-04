@@ -20,5 +20,6 @@ namespace PC_SHOP.Shared.Domain
         [ValidateComplexType]
         public virtual ListItem ListItem { get; set; }
 
+
     }
 }

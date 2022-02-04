@@ -31,6 +31,7 @@ namespace PC_SHOP.Server.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ListItem> ListItem { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<TransactionHistory> TransactionsHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

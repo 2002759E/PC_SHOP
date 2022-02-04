@@ -29,7 +29,7 @@ namespace PC_SHOP.Server.Controllers
 
         public async Task<IActionResult> GetPurchaseRequests()
         {
-            var PurchaseRequests = await _unitOfWork.PurchaseRequests.GetAll(includes: q => q.Include(x => x.Payment).Include(x => x.ListItem));
+            var PurchaseRequests = await _unitOfWork.PurchaseRequests.GetAll(includes: q => q.Include(x => x.Payment).Include(x => x.ListItem).Include(x => x.ListItem.Item));
             return Ok(PurchaseRequests);
         }
 
@@ -40,6 +40,8 @@ namespace PC_SHOP.Server.Controllers
         {
 
             var PurchaseRequest = await _unitOfWork.PurchaseRequests.Get(q => q.Id == id);
+
+            //var PurchaseRequest = await _unitOfWork.PurchaseRequests.Get(includes: q => q.Include(x => x.Payment).Include(x => x.ListItem).Include(x => x.ListItem.Item));
 
             if (PurchaseRequest == null)
             {

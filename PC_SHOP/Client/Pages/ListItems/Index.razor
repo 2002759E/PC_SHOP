@@ -34,6 +34,7 @@ else
                 <th>Condition</th>
                 <th>Brand</th>
                 <th>Category</th>
+                <th>Date Listed</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -42,53 +43,54 @@ else
             {
                 if (listitem.CreatedBy == @_currentUserName)
                 {
-                    <tr>
-                        <td>@listitem.Item.Name</td>
-                        <td>@listitem.Item.Description</td>
-                        <td>@listitem.Price</td>
-                        @if (Items != null)
+            <tr>
+                <td>@listitem.Item.Name</td>
+                <td>@listitem.Item.Description</td>
+                <td>@listitem.Price</td>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
                         {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Condition.Name</td>
-                                }
-                            }
+                            <td>@item.Condition.Name</td>
                         }
-                        @if (Items != null)
+                    }
+                }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
                         {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Brand.Name</td>
-                                }
-                            }
+                            <td>@item.Brand.Name</td>
                         }
-                        @if (Items != null)
+                    }
+                }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        if (@listitem.ItemID == item.Id)
                         {
-                            foreach (var item in Items)
-                            {
-                                if (@listitem.ItemID == item.Id)
-                                {
-                                    <td>@item.Category.Name</td>
-                                }
-                            }
+                            <td>@item.Category.Name</td>
                         }
-                        <td>
+                    }
+                }
+                <td>@listitem.DateCreated</td>
+                <td>
 
-                            <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
-                                <span class="oi oi-book"></span>
-                            </a>
-                            <a href="/listitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
-                                <span class="oi oi-pencil"></span>
-                            </a>
-                            <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
-                                <span class="oi oi-delete"></span>
-                            </button>
-                        </td>
-                    </tr>
+                    <a href="/listitems/view/@listitem.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/listitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
                 }
             }
         </tbody>

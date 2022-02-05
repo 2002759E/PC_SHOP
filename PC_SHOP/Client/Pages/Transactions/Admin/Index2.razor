@@ -38,6 +38,7 @@ else
                 <th>Offer Price</th>
                 <th>Item Offered</th>
                 <th>Status</th>
+                <th>Date</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -58,11 +59,12 @@ else
                 }
                 @if (@transaction.TransactionType == "purchase")
                 {
-                    
+
                     <td>@transaction.OfferPrice</td>
                     <td>nil</td>
                     <td>@transaction.Status</td>
                 }
+                <td>@transaction.DateCreated</td>
                 <td>
                     <a href="/transactions/view/@transaction.Id" class="btn btn-primary">
                         <span class="oi oi-book"></span>

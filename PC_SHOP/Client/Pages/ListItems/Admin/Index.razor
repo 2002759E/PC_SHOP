@@ -16,6 +16,11 @@
 </a>
 <br />
 <br />
+<button class="btn btn-danger" @onclick="@(()=>Clear())">
+    Clear all
+</button>
+<br />
+<br />
 
 @if (ListItems == null)
 {
@@ -35,6 +40,7 @@ else
                 <th>Brand</th>
                 <th>Category</th>
                 <th>Listed By</th>
+                <th>Date Listed</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -42,60 +48,61 @@ else
             @foreach (var listitem in ListItems)
             {
 
-                <tr>
-                    <td>@listitem.Item.Name</td>
-                    <td>@listitem.Item.Description</td>
-                    <td>@listitem.Price</td>
-                    @if (Items != null)
+            <tr>
+                <td>@listitem.Item.Name</td>
+                <td>@listitem.Item.Description</td>
+                <td>@listitem.Price</td>
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
                     {
-                        foreach (var item in Items)
+                        if (@listitem.ItemID == item.Id)
                         {
-                            if (@listitem.ItemID == item.Id)
-                            {
-                                <td>@item.Condition.Name</td>
-                            }
+                            <td>@item.Condition.Name</td>
                         }
                     }
-                    @if (Items != null)
+                }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
                     {
-                        foreach (var item in Items)
+                        if (@listitem.ItemID == item.Id)
                         {
-                            if (@listitem.ItemID == item.Id)
-                            {
-                                <td>@item.Brand.Name</td>
-                            }
+                            <td>@item.Brand.Name</td>
                         }
                     }
-                    @if (Items != null)
+                }
+                @if (Items != null)
+                {
+                    foreach (var item in Items)
                     {
-                        foreach (var item in Items)
+                        if (@listitem.ItemID == item.Id)
                         {
-                            if (@listitem.ItemID == item.Id)
-                            {
-                                <td>@item.Category.Name</td>
-                            }
+                            <td>@item.Category.Name</td>
                         }
                     }
-                    <td>@listitem.CreatedBy</td>
-                    <td>
+                }
+                <td>@listitem.CreatedBy</td>
+                <td>@listitem.DateCreated</td>
+                <td>
 
-                        <a href="/adminlistitems/view/@listitem.Id" class="btn btn-primary">
-                            <span class="oi oi-book"></span>
-                        </a>
-                        <a href="/adminlistitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
-                            <span class="oi oi-pencil"></span>
-                        </a>
-                        <a href="/adminlistitems/trade/@listitem.Id" class="btn btn-info">
-                            <span class="oi oi-transfer"></span>
-                        </a>
-                        <a href="/adminlistitems/purchase/@listitem.Id" class="btn btn-success">
-                            <span class="oi oi-dollar"></span>
-                        </a>
-                        <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
-                            <span class="oi oi-delete"></span>
-                        </button>
-                    </td>
-                </tr>
+                    <a href="/adminlistitems/view/@listitem.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/adminlistitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <a href="/adminlistitems/trade/@listitem.Id" class="btn btn-info">
+                        <span class="oi oi-transfer"></span>
+                    </a>
+                    <a href="/adminlistitems/purchase/@listitem.Id" class="btn btn-success">
+                        <span class="oi oi-dollar"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
 
             }
         </tbody>
@@ -194,6 +201,16 @@ else
     {
         js.InvokeVoidAsync("DataTablesDispose", "#listItemsTable");
         _interceptor.DisposeEvent();
+    }
+
+    async Task Clear()
+    {
+        foreach (var listItem in ListItems)
+        {
+            await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listItem.Id}");
+            await OnInitializedAsync();
+        }
+
     }
 
 }

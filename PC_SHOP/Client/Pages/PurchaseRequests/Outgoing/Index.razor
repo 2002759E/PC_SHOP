@@ -34,6 +34,7 @@ else
                 <th>Item Price($)</th>
                 <th>Offered Price($)</th>
                 <th>Payment</th>
+                <th>Date Requested</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -42,52 +43,53 @@ else
             {
                 if (request.CreatedBy == @_currentUserName)
                 {
-                    <tr>
-                        @if (ListItems != null)
+            <tr>
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@request.ListItemID == listItem.Id)
                         {
-                            foreach (var listItem in ListItems)
+                            @if (Items != null)
                             {
-                                if (@request.ListItemID == listItem.Id)
+                                foreach (var item in Items)
                                 {
-                                    @if (Items != null)
+                                    if (@request.ListItem.ItemID == item.Id)
                                     {
-                                        foreach (var item in Items)
-                                        {
-                                            if (@request.ListItem.ItemID == item.Id)
-                                            {
-                                                <td>@item.CreatedBy</td>
-                                                <td>@item.Name</td>
+                                        <td>@item.CreatedBy</td>
+                                        <td>@item.Name</td>
 
-                                            }
-                                        }
                                     }
                                 }
                             }
                         }
-                        @if (ListItems != null)
+                    }
+                }
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@request.ListItemID == listItem.Id)
                         {
-                            foreach (var listItem in ListItems)
-                            {
-                                if (@request.ListItemID == listItem.Id)
-                                {
-                                    <td>@listItem.Price</td>
-                                }
-                            }
+                            <td>@listItem.Price</td>
                         }
-                        <td>@request.Price</td>
-                        <td>@request.Payment.Name</td>
-                        <td>
-                            <a href="/outpurchaserequests/view/@request.Id" class="btn btn-primary">
-                                <span class="oi oi-book"></span>
-                            </a>
-                            <a href="/outpurchaserequests/edit/@request.Id" class="btn btn-warning">
-                                <span class="oi oi-pencil"></span>
-                            </a>
-                            <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
-                                <span class="oi oi-delete"></span>
-                            </button>
-                        </td>
-                    </tr>
+                    }
+                }
+                <td>@request.Price</td>
+                <td>@request.Payment.Name</td>
+                <td>@request.DateCreated</td>
+                <td>
+                    <a href="/outpurchaserequests/view/@request.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/outpurchaserequests/edit/@request.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete (request.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
                 }
             }
         </tbody>

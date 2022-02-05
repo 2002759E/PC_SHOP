@@ -29,6 +29,7 @@ else
                 <th>Offer Price</th>
                 <th>Item Offered</th>
                 <th>Status</th>
+                <th>Date</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -37,31 +38,32 @@ else
             {
                 if (transaction.ListedItemOwner == _currentUserName || transaction.BuyerName == _currentUserName)
                 {
-                    <tr>
-                        <td>@transaction.ListedItemOwner</td>
-                        <td>@transaction.ListedItemName</td>
-                        <td>@transaction.ListedItemPrice</td>
-                        <td>@transaction.BuyerName</td>
-                        <td>@transaction.TransactionType</td>
-                        @if (@transaction.TransactionType == "trade")
-                        {
-                            <td>nil</td>
-                            <td>@transaction.OfferItem</td>
-                            <td>@transaction.Status</td>
-                        }
-                        @if (@transaction.TransactionType == "purchase")
-                        {
+            <tr>
+                <td>@transaction.ListedItemOwner</td>
+                <td>@transaction.ListedItemName</td>
+                <td>@transaction.ListedItemPrice</td>
+                <td>@transaction.BuyerName</td>
+                <td>@transaction.TransactionType</td>
+                @if (@transaction.TransactionType == "trade")
+                {
+                    <td>nil</td>
+                    <td>@transaction.OfferItem</td>
+                    <td>@transaction.Status</td>
+                }
+                @if (@transaction.TransactionType == "purchase")
+                {
 
-                            <td>@transaction.OfferPrice</td>
-                            <td>nil</td>
-                            <td>@transaction.Status</td>
-                        }
-                        <td>
-                            <a href="/usertransactions/view/@transaction.Id" class="btn btn-primary">
-                                <span class="oi oi-book"></span>
-                            </a>
-                        </td>
-                    </tr>
+                    <td>@transaction.OfferPrice</td>
+                    <td>nil</td>
+                    <td>@transaction.Status</td>
+                }
+                <td>@transaction.DateCreated</td>
+                <td>
+                    <a href="/usertransactions/view/@transaction.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                </td>
+            </tr>
                 }
 
             }

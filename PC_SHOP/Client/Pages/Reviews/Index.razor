@@ -1,18 +1,20 @@
-﻿@page "/reviews/"
+﻿@page "/userreviews/"
 @inject HttpClient _client
 @inject IJSRuntime js
-@attribute [Authorize]
 @implements IDisposable
+@attribute [Authorize]
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpInterceptorService _interceptor
 
+
 <h3>Reviews</h3>
-<a href="/reviews/create" class="btn btn-secondary">
+<a href="/userreviews/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
-    Add Review
+    Create Review for Others
 </a>
 <br />
 <br />
-
 
 @if (Reviews == null)
 {
@@ -22,48 +24,83 @@
 }
 else
 {
-    <table class="table table-responsive" id="reviewsTable">
+    <table class="table table-responsive" id="userreviewsTable">
         <thead>
             <tr>
-                <th>Ratings</th>
+                <th>Rating</th>
+                <th>By</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var review in Reviews)
             {
-                <tr>
-                    <td>@review.Rating</td>
-                    <td>
-                        <a href="/reviews/view/@review.Id" class="btn btn-primary">
-                            <span class="oi oi-book"></span>
-                        </a>
-                        <a href="/reviews/edit/@review.Id" class="btn btn-warning">
-                            <span class="oi oi-pencil"></span>
-                        </a>
-                        <button class="btn btn-danger" @onclick="@(()=>Delete (review.Id))">
-                            <span class="oi oi-delete"></span>
-                        </button>
-                    </td>
-                </tr>
+                if (review.Username == @_currentUserName)
+                {
+                    <tr>
+                        <td>@review.Rating</td>
+                        <td>@review.CreatedBy</td>
+                        <td>
+                            <a href="/userreviews/view/@review.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
 
+ 
 }
 
 
-
-
-
-
 @code {
+
+    private List<AppUser> AppUsers;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private string _currentUserId;
+    private string _currentUserName;
+    private string _currentUserRole;
+
     private List<Review> Reviews;
 
     protected async override Task OnInitializedAsync()
     {
         _interceptor.MonitorEvent();
         Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _claims = user.Claims;
+            //_currentUserName = user.Identity.Name;
+            if (_claims.Count() > 0)
+            {
+                foreach (var claim in _claims)
+                {
+                    if (claim.Type == "sub")
+                    {
+                        _currentUserId = claim.Value;
+                        continue;
+
+                    }
+                    if (claim.Type == "name")
+                    {
+                        _currentUserName = claim.Value;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (_currentUserId != String.Empty)
+        {
+            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
+        }
     }
 
 
@@ -83,13 +120,17 @@ else
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await js.InvokeVoidAsync("AddDataTable", "#reviewsTable");
+        await js.InvokeVoidAsync("AddDataTable", "#userreviewsTable");
+        //await js.InvokeVoidAsync("AddDataTable", "#accreviewsTable");
+
 
     }
 
     public void Dispose()
     {
-        js.InvokeVoidAsync("DataTablesDispose", "#reviewsTable");
+        js.InvokeVoidAsync("DataTablesDispose", "#userreviewsTable");
+        //js.InvokeVoidAsync("DataTablesDispose", "#accreviewsTable");
         _interceptor.DisposeEvent();
     }
+
 }

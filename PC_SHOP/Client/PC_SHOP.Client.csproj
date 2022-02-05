@@ -11,11 +11,11 @@
     <None Include="Pages\Payment\FormComponent.razor" />
     <None Include="Pages\Payment\Index.razor" />
     <None Include="Pages\Payment\View.razor" />
-    <None Include="Pages\Reviews\Create.razor" />
-    <None Include="Pages\Reviews\Edit.razor" />
-    <None Include="Pages\Reviews\FormComponent.razor" />
-    <None Include="Pages\Reviews\Index.razor" />
-    <None Include="Pages\Reviews\View.razor" />
+    <None Include="Pages\Reviews\Admin\Create.razor" />
+    <None Include="Pages\Reviews\Admin\Edit.razor" />
+    <None Include="Pages\Reviews\Admin\FormComponent.razor" />
+    <None Include="Pages\Reviews\Admin\Index.razor" />
+    <None Include="Pages\Reviews\Admin\View.razor" />
   </ItemGroup>
 
   <ItemGroup>

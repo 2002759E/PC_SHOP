@@ -152,14 +152,14 @@ namespace PC_SHOP.Server.Migrations
                         new
                         {
                             Id = "ad2bcf0c-20db-474f-8407-5a6b159518ba",
-                            ConcurrencyStamp = "539de4b8-fb91-459a-bf12-3601a616c7d1",
+                            ConcurrencyStamp = "afe0a10c-d113-4699-a2ce-4b2e1c2b85aa",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
                             Id = "bd2bcf0c-20db-474f-8407-5a6b159518bb",
-                            ConcurrencyStamp = "03eeb8ac-3ccd-4437-9de9-7a41cd6fb475",
+                            ConcurrencyStamp = "f96e5796-e6cb-4997-938e-7ecaa13aa3b9",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -355,7 +355,7 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "39a68a8f-3735-46a1-804b-17edda8d0087",
+                            ConcurrencyStamp = "bd5b03a2-0155-4f4a-b584-37a3d1cbae6e",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -363,9 +363,9 @@ namespace PC_SHOP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEpmDyf0NbQSgbZ05MUqFsgvde73tljpeOf8jc438JTTcbbAGeDUuXNNVKfqAQXzPA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEP3M64HJEzGLqZWALzdf+/RWeKUEv2GWUyky9IEJHZRR9brHnDtmJuAsbMh1/WK5lg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a511d727-415b-4b40-a2e2-a5af719834ec",
+                            SecurityStamp = "feefd603-7f67-4a9b-8647-89e691ee782a",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -403,8 +403,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(5441),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(5445),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 990, DateTimeKind.Local).AddTicks(2899),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 990, DateTimeKind.Local).AddTicks(2904),
                             Name = "HP",
                             UpdatedBy = "System"
                         },
@@ -412,8 +412,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 2,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(5448),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(5449),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 990, DateTimeKind.Local).AddTicks(2907),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 990, DateTimeKind.Local).AddTicks(2907),
                             Name = "ASUS",
                             UpdatedBy = "System"
                         },
@@ -421,8 +421,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 3,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(5450),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(5451),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 990, DateTimeKind.Local).AddTicks(2909),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 990, DateTimeKind.Local).AddTicks(2910),
                             Name = "AMD",
                             UpdatedBy = "System"
                         });
@@ -460,8 +460,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(68),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(78),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6509),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6516),
                             Name = "Deskstops",
                             UpdatedBy = "System"
                         },
@@ -469,8 +469,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 2,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(81),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(81),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6520),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6521),
                             Name = "Laptops & Notebooks",
                             UpdatedBy = "System"
                         },
@@ -478,8 +478,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 3,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(83),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(83),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6522),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6523),
                             Name = "Accessories",
                             UpdatedBy = "System"
                         },
@@ -487,8 +487,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 4,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(85),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(85),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6524),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(6525),
                             Name = "PC PARTS",
                             UpdatedBy = "System"
                         });
@@ -526,8 +526,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(2712),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(2717),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(9675),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(9681),
                             Name = "New",
                             UpdatedBy = "System"
                         },
@@ -535,8 +535,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 2,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(2720),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(2721),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(9684),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(9684),
                             Name = "Like New",
                             UpdatedBy = "System"
                         },
@@ -544,8 +544,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 3,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(2722),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 373, DateTimeKind.Local).AddTicks(2723),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(9686),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 989, DateTimeKind.Local).AddTicks(9686),
                             Name = "Used",
                             UpdatedBy = "System"
                         });
@@ -667,8 +667,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 370, DateTimeKind.Local).AddTicks(27),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 371, DateTimeKind.Local).AddTicks(7854),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 986, DateTimeKind.Local).AddTicks(8389),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 988, DateTimeKind.Local).AddTicks(4305),
                             Name = "Cash",
                             UpdatedBy = "System"
                         },
@@ -676,8 +676,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 2,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 371, DateTimeKind.Local).AddTicks(8839),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 371, DateTimeKind.Local).AddTicks(8845),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 988, DateTimeKind.Local).AddTicks(5097),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 988, DateTimeKind.Local).AddTicks(5101),
                             Name = "DBS",
                             UpdatedBy = "System"
                         },
@@ -685,8 +685,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 3,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 371, DateTimeKind.Local).AddTicks(8846),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 371, DateTimeKind.Local).AddTicks(8847),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 988, DateTimeKind.Local).AddTicks(5103),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 988, DateTimeKind.Local).AddTicks(5104),
                             Name = "POSB",
                             UpdatedBy = "System"
                         },
@@ -694,8 +694,8 @@ namespace PC_SHOP.Server.Migrations
                         {
                             Id = 4,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 2, 5, 13, 22, 55, 371, DateTimeKind.Local).AddTicks(8848),
-                            DateUpdated = new DateTime(2022, 2, 5, 13, 22, 55, 371, DateTimeKind.Local).AddTicks(8849),
+                            DateCreated = new DateTime(2022, 2, 5, 22, 33, 55, 988, DateTimeKind.Local).AddTicks(5105),
+                            DateUpdated = new DateTime(2022, 2, 5, 22, 33, 55, 988, DateTimeKind.Local).AddTicks(5106),
                             Name = "MasterCard",
                             UpdatedBy = "System"
                         });
@@ -762,6 +762,10 @@ namespace PC_SHOP.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

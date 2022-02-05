@@ -11,6 +11,9 @@ namespace PC_SHOP.Shared.Domain
     public class Review : BaseDomainModel
     {
         [Required]
+        public string Username { get; set; }
+        [Required]
+        [Range(1, 10, ErrorMessage = "Rating must be between 1 to 10.")]
         public int? Rating { get; set; }
     }
 }

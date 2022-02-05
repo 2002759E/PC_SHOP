@@ -1,10 +1,6 @@
-﻿@page "/userreviews/create/"
+﻿@page "/reviews/create/"
 @inject HttpClient _client
 @inject NavigationManager _navManager
-@attribute [Authorize]
-@using System.Security.Claims
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IJSRuntime js
 
 
 
@@ -21,7 +17,7 @@
                 {
                     @foreach (var user in AppUsers)
                     {
-                        if (user.UserName != "Admin" & user.UserName != _currentUserName)
+                        if (user.UserName != "Admin")
                         {
                             <option value="@user.UserName">@user.UserName</option>
                         }
@@ -42,7 +38,7 @@
     <button type="submit" class="btn btn-success btn-block">
         Add Review
     </button>
-    <BackToList Target="userreviews" />
+    <BackToList Target="reviews" />
 
 </EditForm>
 
@@ -52,19 +48,12 @@
 
 
 @code {
-
-    private List<AppUser> AppUsers1;
-    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
-    private string _currentUserId;
-    private string _currentUserName;
-    private string _currentUserRole;
-
     Review review = new Review();
 
     private async Task CreateReview()
     {
         await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, review);
-        _navManager.NavigateTo("/userreviews/");
+        _navManager.NavigateTo("/reviews/");
     }
 
     private IList<AppUser> AppUsers;
@@ -72,36 +61,6 @@
     protected async override Task OnInitializedAsync()
     {
         AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity.IsAuthenticated)
-        {
-            _claims = user.Claims;
-            //_currentUserName = user.Identity.Name;
-            if (_claims.Count() > 0)
-            {
-                foreach (var claim in _claims)
-                {
-                    if (claim.Type == "sub")
-                    {
-                        _currentUserId = claim.Value;
-                        continue;
-
-                    }
-                    if (claim.Type == "name")
-                    {
-                        _currentUserName = claim.Value;
-                        continue;
-                    }
-                }
-            }
-        }
-
-        if (_currentUserId != String.Empty)
-        {
-            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
-        }
-
+        
     }
 }

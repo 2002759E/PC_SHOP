@@ -1,0 +1,17 @@
+﻿@page "/transactions/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3>View</h3>
+
+<FormComponent transaction="transaction" Disabled="true" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Transaction transaction = new Transaction();
+    protected async override Task OnParametersSetAsync()
+    {
+        transaction = await _client.GetFromJsonAsync<Transaction>($"{Endpoints.TransactionsEndpoint}/{id}");
+    }
+}

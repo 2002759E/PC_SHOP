@@ -77,10 +77,15 @@ else
                             {
                                 if (@request.ListItem.ItemID == item.Id)
                                 {
-
-                                    <a href="/inpurchaserequests/accept/@item.Id/@request.Id" class="btn btn-success">
-                                        <span class="oi oi-circle-check"></span>
-                                    </a>
+                                    @foreach (var listItem in ListItems)
+                                    {
+                                        if (@request.ListItemID == @listItem.Id)
+                                        {
+                                            <a href="/inpurchaserequests/accept/@item.Id/@request.Id/@listItem.Id" class="btn btn-success">
+                                                <span class="oi oi-circle-check"></span>
+                                            </a>
+                                        }
+                                    }
 
                                 }
                             }

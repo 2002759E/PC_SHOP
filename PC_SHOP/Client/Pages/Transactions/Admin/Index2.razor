@@ -1,0 +1,113 @@
+﻿@page "/transactions/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@implements IDisposable
+@inject HttpInterceptorService _interceptor
+
+<h3>Transaction</h3>
+
+<a href="/transactions/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Transaction
+</a>
+<br />
+<br />
+
+@if (Transactions == null)
+{
+
+    <div class="alert alert-info">Loading Transactions...</div>
+
+}
+else
+{
+    <table class="table table-responsive" id="transactionsTable">
+        <thead>
+            <tr>
+                <th>Listed By</th>
+                <th>Listed Item</th>
+                <th>Listed Item Price</th>
+                <th>Requested By</th>
+                <th>Transaction</th>
+                <th>Offer Price</th>
+                <th>Item Offered</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Transactions)
+            {
+            <tr>
+                <td>@transaction.ListedItemOwner</td>
+                <td>@transaction.ListedItemName</td>
+                <td>@transaction.ListedItemPrice</td>
+                <td>@transaction.BuyerName</td>
+                <td>@transaction.TransactionType</td>
+                @if (@transaction.TransactionType == "trade")
+                {
+                    <td>nil</td>
+                    <td>@transaction.OfferItem</td>
+                    <td>@transaction.Status</td>
+                }
+                @if (@transaction.TransactionType == "purchase")
+                {
+                    
+                    <td>@transaction.OfferPrice</td>
+                    <td>nil</td>
+                    <td>@transaction.Status</td>
+                }
+                <td>
+                    <a href="/transactions/view/@transaction.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/transactions/edit/@transaction.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete (transaction.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+
+    private List<Transaction> Transactions;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Transactions = await _client.GetFromJsonAsync<List<Transaction>>($"{Endpoints.TransactionsEndpoint}");
+    }
+
+    async Task Delete(int transactionid)
+    {
+        var transaction = Transactions.First(q => q.Id == transactionid);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete transaction?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.TransactionsEndpoint}/{transactionid}");
+            await OnInitializedAsync();
+
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#transactionsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#transactionsTable");
+        _interceptor.DisposeEvent();
+    }
+
+}

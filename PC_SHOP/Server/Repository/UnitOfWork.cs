@@ -26,7 +26,7 @@ namespace PC_SHOP.Server.Repository
         private IGenericRepository<Payment> _payments;
         private IGenericRepository<TradeRequest> _traderequests;
         private IGenericRepository<Review> _reviews;
-        private IGenericRepository<TransactionHistory> _transactionshistory;
+        private IGenericRepository<Transaction> _transactions;
 
 
         private UserManager<ApplicationUser> _userManager;
@@ -55,8 +55,8 @@ namespace PC_SHOP.Server.Repository
             => _traderequests ??= new GenericRepository<TradeRequest>(_context);
         public IGenericRepository<Review> Reviews
             => _reviews ??= new GenericRepository<Review>(_context);
-        public IGenericRepository<TransactionHistory> TransactionsHistory
-           => _transactionshistory ??= new GenericRepository<TransactionHistory>(_context);
+        public IGenericRepository<Transaction> Transactions
+           => _transactions ??= new GenericRepository<Transaction>(_context);
 
         public void Dispose()
         {

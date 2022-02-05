@@ -1,0 +1,21 @@
+﻿@page "/transactions/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3 class="card-title">Create New Transactions</h3>
+<hr />
+<br />
+<FormComponent ButtonText="Create Transactions" transaction="transaction" OnValidSubmit="@CreateTransaction" />
+
+
+
+@code {
+    Transaction transaction = new Transaction();
+
+    private async Task CreateTransaction()
+    {
+        await _client.PostAsJsonAsync(Endpoints.TransactionsEndpoint, transaction);
+        _navManager.NavigateTo("/transactions/");
+    }
+}

@@ -20,6 +20,6 @@ namespace PC_SHOP.Server.IRepository
         IGenericRepository<Payment> Payments { get; }
         IGenericRepository<TradeRequest> TradeRequests { get; }
         IGenericRepository<Review> Reviews { get; }
-        IGenericRepository<TransactionHistory> TransactionsHistory { get; }
+        IGenericRepository<Transaction> Transactions { get; }
     }
 }

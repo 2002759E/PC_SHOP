@@ -19,5 +19,6 @@ namespace PC_SHOP.Client.Static
         public static readonly string PaymentsEndpoint = $"{Prefix}/payments";
         public static readonly string TradeRequestsEndpoint = $"{Prefix}/traderequests";
         public static readonly string ReviewsEndpoint = $"{Prefix}/reviews";
+        public static readonly string TransactionsEndpoint = $"{Prefix}/transactions";
     }
 }

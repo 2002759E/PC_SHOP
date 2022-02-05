@@ -1,4 +1,4 @@
-﻿@page "/adminpurchaserequests/accept/{itemid:int}/{reqid:int}"
+﻿@page "/adminpurchaserequests/accept/{itemid:int}/{reqid:int}/{listid:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 
@@ -21,18 +21,85 @@
             </div>
         </div>
     </fieldset>
-    <button type="submit" class="btn btn-success btn-block">
-        confirm
-    </button>
-    <BackToList Target="adminpurchaserequests" />
 </EditForm>
+
+<EditForm Model="@transaction" OnValidSubmit="CreateTransaction">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div hidden>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.ListedItemOwner" class="form-control" />
+                <ValidationMessage For="@(() => transaction.ListedItemOwner)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.ListedItemName" class="form-control" />
+                <ValidationMessage For="@(() => transaction.ListedItemName)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputNumber @bind-Value="@transaction.ListedItemPrice" class="form-control" />
+                <ValidationMessage For="@(() => transaction.ListedItemPrice)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.BuyerName" class="form-control" />
+                <ValidationMessage For="@(() => transaction.BuyerName)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.TransactionType" class="form-control" />
+                <ValidationMessage For="@(() => transaction.TransactionType)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputNumber @bind-Value="@transaction.OfferPrice" class="form-control" />
+                <ValidationMessage For="@(() => transaction.OfferPrice)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.OfferItem" class="form-control" />
+                <ValidationMessage For="@(() => transaction.OfferItem)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.Status" class="form-control" />
+                <ValidationMessage For="@(() => transaction.Status)" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<button type="submit" class="btn btn-success btn-block" @onclick="ALL">
+    Confirm Purchase
+</button>
+<BackToList Target="adminpurchaserequests" />
 
 @code {
     [Parameter] public int itemid { get; set; }
     [Parameter] public int reqid { get; set; }
+    [Parameter] public int listid { get; set; }
 
     Item item = new Item();
     PurchaseRequest purchaserequest = new PurchaseRequest();
+    Transaction transaction = new Transaction();
+    ListItem listItem = new ListItem();
 
     private IList<TradeRequest> tr;
     private IList<PurchaseRequest> pr;
@@ -42,8 +109,17 @@
     {
         item = await _client.GetFromJsonAsync<Item>($"{Endpoints.ItemsEndpoint}/{itemid}");
         purchaserequest = await _client.GetFromJsonAsync<PurchaseRequest>($"{Endpoints.PurchaseRequestsEndpoint}/{reqid}");
+        listItem = await _client.GetFromJsonAsync<ListItem>($"{Endpoints.ListItemsEndpoint}/{listid}");
 
         item.CreatedBy = purchaserequest.CreatedBy;
+
+        transaction.ListedItemOwner = listItem.CreatedBy;
+        transaction.ListedItemName = item.Name;
+        transaction.ListedItemPrice = listItem.Price;
+        transaction.BuyerName = purchaserequest.CreatedBy;
+        transaction.TransactionType = "purchase";
+        transaction.OfferPrice = purchaserequest.Price;
+        transaction.Status = "Accepted";
     }
 
     protected async override Task OnInitializedAsync()
@@ -84,6 +160,20 @@
     {
         await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid}", item);
         _navManager.NavigateTo("/adminpurchaserequests/");
+    }
+
+    private async Task CreateTransaction()
+    {
+        await _client.PostAsJsonAsync(Endpoints.TransactionsEndpoint, transaction);
+    }
+
+    public void ALL()
+    {
+
+        CreateTransaction();
+
+        Clean();
+
     }
 
 

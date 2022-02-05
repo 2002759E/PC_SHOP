@@ -13,53 +13,53 @@ namespace PC_SHOP.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionsHistoryController : ControllerBase
+    public class TransactionsController : ControllerBase
     {
 
         private readonly IUnitOfWork _unitOfWork;
 
 
-        public TransactionsHistoryController(IUnitOfWork unitOfWork)
+        public TransactionsController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        // GET: api/TransactionsHistory
+        // GET: api/Transactions
         [HttpGet]
 
-        public async Task<IActionResult> GetTransactionsHistory()
+        public async Task<IActionResult> GetTransactions()
         {
-            var TransactionsHistory = await _unitOfWork.TransactionsHistory.GetAll();
-            return Ok(TransactionsHistory);
+            var Transactions = await _unitOfWork.Transactions.GetAll();
+            return Ok(Transactions);
         }
 
-        // GET: api/TransactionsHistory/5
+        // GET: api/Transactions/5
         [HttpGet("{id}")]
 
-        public async Task<IActionResult> GetTransactionHistory(int id)
+        public async Task<IActionResult> GetTransaction(int id)
         {
 
-            var TransactionHistory = await _unitOfWork.TransactionsHistory.Get(q => q.Id == id);
+            var Transaction = await _unitOfWork.Transactions.Get(q => q.Id == id);
 
-            if (TransactionHistory == null)
+            if (Transaction == null)
             {
                 return NotFound();
             }
 
-            return Ok(TransactionHistory);
+            return Ok(Transaction);
         }
 
-        // PUT: api/TransactionsHistory/5
+        // PUT: api/Transactions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransactionHistory(int id, TransactionHistory TransactionHistory)
+        public async Task<IActionResult> PutTransaction(int id, Transaction Transaction)
         {
-            if (id != TransactionHistory.Id)
+            if (id != Transaction.Id)
             {
                 return BadRequest();
             }
 
-            _unitOfWork.TransactionsHistory.Update(TransactionHistory);
+            _unitOfWork.Transactions.Update(Transaction);
 
             try
             {
@@ -67,7 +67,7 @@ namespace PC_SHOP.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await TransactionHistoryExists(id))
+                if (!await TransactionExists(id))
                 {
                     return NotFound();
                 }
@@ -80,37 +80,37 @@ namespace PC_SHOP.Server.Controllers
             return NoContent();
         }
 
-        // POST: api/TransactionsHistory
+        // POST: api/Transactions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TransactionHistory>> PostTransactionHistory(TransactionHistory TransactionHistory)
+        public async Task<ActionResult<Transaction>> PostTransaction(Transaction Transaction)
         {
-            await _unitOfWork.TransactionsHistory.Insert(TransactionHistory);
+            await _unitOfWork.Transactions.Insert(Transaction);
             await _unitOfWork.Save(HttpContext);
 
-            return CreatedAtAction("GetTransactionHistory", new { id = TransactionHistory.Id }, TransactionHistory);
+            return CreatedAtAction("GetTransaction", new { id = Transaction.Id }, Transaction);
         }
 
-        // DELETE: api/TransactionsHistory/5
+        // DELETE: api/Transactions/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransactionHistory(int id)
+        public async Task<IActionResult> DeleteTransaction(int id)
         {
-            var TransactionHistory = await _unitOfWork.TransactionsHistory.Get(q => q.Id == id);
-            if (TransactionHistory == null)
+            var Transaction = await _unitOfWork.Transactions.Get(q => q.Id == id);
+            if (Transaction == null)
             {
                 return NotFound();
             }
 
-            await _unitOfWork.TransactionsHistory.Delete(id);
+            await _unitOfWork.Transactions.Delete(id);
             await _unitOfWork.Save(HttpContext);
 
             return NoContent();
         }
 
-        private async Task<bool> TransactionHistoryExists(int id)
+        private async Task<bool> TransactionExists(int id)
         {
-            var TransactionHistory = await _unitOfWork.TransactionsHistory.Get(q => q.Id == id);
-            return TransactionHistory != null;
+            var Transaction = await _unitOfWork.Transactions.Get(q => q.Id == id);
+            return Transaction != null;
         }
     }
 }

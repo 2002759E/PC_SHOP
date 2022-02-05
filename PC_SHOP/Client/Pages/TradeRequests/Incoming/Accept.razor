@@ -198,6 +198,10 @@
         {
             if (tr.ListItemID == traderequest.ListItemID)
             {
+                if (tr.Id != reqid)
+                {
+                    DenyTR(tr);
+                }
                 await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{tr.Id}");
             }
         }
@@ -206,6 +210,7 @@
             if (pr.ListItemID == traderequest.ListItemID)
             {
                 await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{pr.Id}");
+                DenyPR(pr);
             }
         }
         foreach (var li in li)
@@ -255,6 +260,36 @@
         EditItem();
 
         Clean();
+    }
+
+    async Task DenyTR(TradeRequest tr)
+    {
+
+        transaction.ListedItemOwner = tr.ListItem.CreatedBy;
+        transaction.ListedItemName = tr.ListItem.Item.Name;
+        transaction.ListedItemPrice = tr.ListItem.Price;
+        transaction.BuyerName = tr.CreatedBy;
+        transaction.TransactionType = "trade";
+        transaction.OfferItem = tr.Item.Name;
+        transaction.Status = "Denied";
+
+        CreateTransaction();
+
+    }
+
+    async Task DenyPR(PurchaseRequest pr)
+    {
+
+        transaction.ListedItemOwner = pr.ListItem.CreatedBy;
+        transaction.ListedItemName = pr.ListItem.Item.Name;
+        transaction.ListedItemPrice = pr.ListItem.Price;
+        transaction.BuyerName = pr.CreatedBy;
+        transaction.TransactionType = "purchase";
+        transaction.OfferPrice = pr.Price;
+        transaction.Status = "Denied";
+
+        CreateTransaction();
+
     }
 
 

@@ -142,18 +142,30 @@
 
     async Task Clean()
     {
+
         foreach (var tr in tr)
         {
             if (tr.ListItemID == purchaserequest.ListItemID)
             {
+
                 await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{tr.Id}");
+                DenyTR(tr);
+
             }
         }
         foreach (var pr in pr)
         {
             if (pr.ListItemID == purchaserequest.ListItemID)
             {
+
+
+                if (pr.Id != reqid)
+                {
+                    DenyPR(pr);
+                }
+
                 await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{pr.Id}");
+
             }
         }
         foreach (var li in li)
@@ -178,12 +190,43 @@
         await _client.PostAsJsonAsync(Endpoints.TransactionsEndpoint, transaction);
     }
 
-    public void ALL()
+    async Task ALL()
     {
 
         CreateTransaction();
 
         Clean();
+
+    }
+
+
+    async Task DenyTR(TradeRequest tr)
+    {
+
+        transaction.ListedItemOwner = tr.ListItem.CreatedBy;
+        transaction.ListedItemName = tr.ListItem.Item.Name;
+        transaction.ListedItemPrice = tr.ListItem.Price;
+        transaction.BuyerName = tr.CreatedBy;
+        transaction.TransactionType = "trade";
+        transaction.OfferItem = tr.Item.Name;
+        transaction.Status = "Denied";
+
+        CreateTransaction();
+
+    }
+
+    async Task DenyPR(PurchaseRequest pr)
+    {
+
+        transaction.ListedItemOwner = pr.ListItem.CreatedBy;
+        transaction.ListedItemName = pr.ListItem.Item.Name;
+        transaction.ListedItemPrice = pr.ListItem.Price;
+        transaction.BuyerName = pr.CreatedBy;
+        transaction.TransactionType = "purchase";
+        transaction.OfferPrice = pr.Price;
+        transaction.Status = "Denied";
+
+        CreateTransaction();
 
     }
 

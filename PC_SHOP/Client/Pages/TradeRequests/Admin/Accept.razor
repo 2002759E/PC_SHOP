@@ -1,4 +1,4 @@
-﻿@page "/adminintraderequests/accept/{itemid:int}/{reqid:int}/{itemid2:int}/{listid:int}"
+﻿@page "/admintraderequests/accept/{itemid:int}/{reqid:int}/{itemid2:int}/{listid:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 
@@ -65,6 +65,70 @@
 
 </EditForm>
 
+<EditForm Model="@transaction" OnValidSubmit="CreateTransaction">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div hidden>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.ListedItemOwner" class="form-control" />
+                <ValidationMessage For="@(() => transaction.ListedItemOwner)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.ListedItemName" class="form-control" />
+                <ValidationMessage For="@(() => transaction.ListedItemName)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputNumber @bind-Value="@transaction.ListedItemPrice" class="form-control" />
+                <ValidationMessage For="@(() => transaction.ListedItemPrice)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.BuyerName" class="form-control" />
+                <ValidationMessage For="@(() => transaction.BuyerName)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.TransactionType" class="form-control" />
+                <ValidationMessage For="@(() => transaction.TransactionType)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputNumber @bind-Value="@transaction.OfferPrice" class="form-control" />
+                <ValidationMessage For="@(() => transaction.OfferPrice)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.OfferItem" class="form-control" />
+                <ValidationMessage For="@(() => transaction.OfferItem)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Brand Name:</label>
+            <div>
+                <InputText @bind-Value="@transaction.Status" class="form-control" />
+                <ValidationMessage For="@(() => transaction.Status)" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
 <br />
 <button type="submit" class="btn btn-success btn-block" @onclick="ALL">
     Confirm Trade
@@ -91,6 +155,7 @@
     Item item2 = new Item();
     ListItem listitem = new ListItem();
     TradeRequest traderequest = new TradeRequest();
+    Transaction transaction = new Transaction();
 
     private IList<TradeRequest> tr;
     private IList<PurchaseRequest> pr;
@@ -109,6 +174,14 @@
         item.CreatedBy = traderequest.CreatedBy;
 
         item2.CreatedBy = save;
+
+        transaction.ListedItemOwner = listitem.CreatedBy;
+        transaction.ListedItemName = item.Name;
+        transaction.ListedItemPrice = listitem.Price;
+        transaction.BuyerName = traderequest.CreatedBy;
+        transaction.TransactionType = "trade";
+        transaction.OfferItem = item2.Name;
+        transaction.Status = "Accepted";
 
     }
 
@@ -142,6 +215,11 @@
             {
                 await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{li.Id}");
             }
+
+            if (li.ItemID == traderequest.ItemID)
+            {
+                await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{li.Id}");
+            }
         }
 
         EditItem2();
@@ -157,16 +235,23 @@
     async Task EditItem2()
     {
         await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid2}", item2);
-        _navManager.NavigateTo("/adminintraderequests/");
+        _navManager.NavigateTo("/admintraderequests/");
     }
 
     void NavigateToList()
     {
-        _navManager.NavigateTo("/adminintraderequests/");
+        _navManager.NavigateTo("/admintraderequests/");
+    }
+
+    private async Task CreateTransaction()
+    {
+        await _client.PostAsJsonAsync(Endpoints.TransactionsEndpoint, transaction);
     }
 
     public void ALL()
     {
+        CreateTransaction();
+
         EditItem();
 
         Clean();

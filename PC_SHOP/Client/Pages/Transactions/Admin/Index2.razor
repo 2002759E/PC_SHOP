@@ -13,6 +13,10 @@
 </a>
 <br />
 <br />
+<button class="btn btn-danger" @onclick="@(()=>Clear())">
+    Clear all
+</button>
+<br />
 
 @if (Transactions == null)
 {
@@ -65,7 +69,7 @@ else
                     <a href="/transactions/edit/@transaction.Id" class="btn btn-warning">
                         <span class="oi oi-pencil"></span>
                     </a>
-                    <button class="btn btn-danger" @onclick="@(()=>Delete (transaction.Id))">
+                    <button class="btn btn-danger" @onclick="@(()=>Delete(transaction.Id))">
                         <span class="oi oi-delete"></span>
                     </button>
                 </td>
@@ -96,6 +100,16 @@ else
             await OnInitializedAsync();
 
         }
+    }
+
+    async Task Clear()
+    {
+        foreach (var transaction in Transactions)
+        {
+            await _client.DeleteAsync($"{Endpoints.TransactionsEndpoint}/{transaction.Id}");
+            await OnInitializedAsync();
+        }
+
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

@@ -1,7 +1,14 @@
-﻿<EditForm Model="@transaction" OnValidSubmit="@OnValidSubmit">
+﻿@page "/usertransactions/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+
+<h3>View</h3>
+
+<EditForm Model="@transaction">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <fieldset disabled="@Disabled">
+    <fieldset disabled>
         <div class="form-group">
             <label>ListedItemOwner:</label>
             <div>
@@ -59,19 +66,16 @@
             </div>
         </div>
     </fieldset>
-    @if (!Disabled)
-    {
-        <button type="submit" class="btn btn-success btn-block">
-            @ButtonText
-        </button>
-    }
-    <BackToList Target="transactions" />
+    
+    <BackToList Target="usertransactions" />
 
 </EditForm>
 
 @code {
-    [Parameter] public bool Disabled { get; set; } = false;
-    [Parameter] public Transaction transaction { get; set; }
-    [Parameter] public string ButtonText { get; set; } = "Save";
-    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public int id { get; set; }
+    Transaction transaction = new Transaction();
+    protected async override Task OnParametersSetAsync()
+    {
+        transaction = await _client.GetFromJsonAsync<Transaction>($"{Endpoints.TransactionsEndpoint}/{id}");
+    }
 }

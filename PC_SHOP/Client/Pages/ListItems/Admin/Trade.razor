@@ -53,7 +53,7 @@
                 {
                     foreach (var item in Items)
                     {
-                        if (@item.CreatedBy == @_currentUserName)
+                        if (item.Id != listitem.ItemID)
                         {
                             <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
                         }

@@ -1,0 +1,134 @@
+﻿@page "/usertransactions/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@implements IDisposable
+@inject HttpInterceptorService _interceptor
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Transaction</h3>
+
+
+@if (Transactions == null)
+{
+
+    <div class="alert alert-info">Loading Transactions...</div>
+
+}
+else
+{
+    <table class="table table-responsive" id="usertransactionsTable">
+        <thead>
+            <tr>
+                <th>Listed By</th>
+                <th>Listed Item</th>
+                <th>Listed Item Price</th>
+                <th>Requested By</th>
+                <th>Transaction</th>
+                <th>Offer Price</th>
+                <th>Item Offered</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Transactions)
+            {
+                if (transaction.ListedItemOwner == _currentUserName || transaction.BuyerName == _currentUserName)
+                {
+                    <tr>
+                        <td>@transaction.ListedItemOwner</td>
+                        <td>@transaction.ListedItemName</td>
+                        <td>@transaction.ListedItemPrice</td>
+                        <td>@transaction.BuyerName</td>
+                        <td>@transaction.TransactionType</td>
+                        @if (@transaction.TransactionType == "trade")
+                        {
+                            <td>nil</td>
+                            <td>@transaction.OfferItem</td>
+                            <td>@transaction.Status</td>
+                        }
+                        @if (@transaction.TransactionType == "purchase")
+                        {
+
+                            <td>@transaction.OfferPrice</td>
+                            <td>nil</td>
+                            <td>@transaction.Status</td>
+                        }
+                        <td>
+                            <a href="/usertransactions/view/@transaction.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+
+}
+
+@code {
+
+    private List<AppUser> AppUsers;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private string _currentUserId;
+    private string _currentUserName;
+    private string _currentUserRole;
+
+    private List<Transaction> Transactions;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Transactions = await _client.GetFromJsonAsync<List<Transaction>>($"{Endpoints.TransactionsEndpoint}");
+
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _claims = user.Claims;
+            //_currentUserName = user.Identity.Name;
+            if (_claims.Count() > 0)
+            {
+                foreach (var claim in _claims)
+                {
+                    if (claim.Type == "sub")
+                    {
+                        _currentUserId = claim.Value;
+                        continue;
+
+                    }
+                    if (claim.Type == "name")
+                    {
+                        _currentUserName = claim.Value;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (_currentUserId != String.Empty)
+        {
+            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
+        }
+    }
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#usertransactionsTable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#usertransactionsTable");
+        _interceptor.DisposeEvent();
+    }
+
+}

@@ -4,7 +4,6 @@
 
 <h1>Edit Listing</h1>
 <br />
-<h3>Edit Listing Price:</h3>
 <EditForm Model="@listitem" OnValidSubmit="EditListItem">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -15,86 +14,78 @@
             <ValidationMessage For="@(() => listitem.Price)" />
         </div>
     </div>
-    <button type="submit" class="btn btn-success btn-block">
-        Edit Price
-    </button>
 </EditForm>
-<br />
-<h3>Edit Item:</h3>
+
 <EditForm Model="@item" OnValidSubmit="EditItem">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    
-        <div class="form-group">
-            <label>Name:</label>
-            <div>
-                <InputText @bind-Value="@item.Name" class="form-control" />
-                <ValidationMessage For="@(() => item.Name)" />
-            </div>
+
+    <div class="form-group">
+        <label>Name:</label>
+        <div>
+            <InputText @bind-Value="@item.Name" class="form-control" />
+            <ValidationMessage For="@(() => item.Name)" />
         </div>
-        <div class="form-group">
-            <label>Description:</label>
-            <div>
-                <InputText @bind-Value="@item.Description" class="form-control" />
-                <ValidationMessage For="@(() => item.Description)" />
-            </div>
+    </div>
+    <div class="form-group">
+        <label>Description:</label>
+        <div>
+            <InputText @bind-Value="@item.Description" class="form-control" />
+            <ValidationMessage For="@(() => item.Description)" />
         </div>
-        <div class="form-group">
-            <label>Condition:</label>
-            <div>
-                <InputSelect @bind-Value="item.ConditionID" class="form-control">
-                    <option value="">--Select Brand--</option>
-                    @if (Conditions != null)
+    </div>
+    <div class="form-group">
+        <label>Condition:</label>
+        <div>
+            <InputSelect @bind-Value="item.ConditionID" class="form-control">
+                <option value="">--Select Brand--</option>
+                @if (Conditions != null)
+                {
+                    foreach (var condition in Conditions)
                     {
-                        foreach (var condition in Conditions)
-                        {
-                            <option value="@condition.Id">@condition.Name</option>}
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => item.ConditionID)" />
-            </div>
+                        <option value="@condition.Id">@condition.Name</option>}
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => item.ConditionID)" />
         </div>
-        <div class="form-group">
-            <label>Brand:</label>
-            <div>
-                <InputSelect @bind-Value="item.BrandID" class="form-control">
-                    <option value="">--Select Brand--</option>
-                    @if (Brands != null)
+    </div>
+    <div class="form-group">
+        <label>Brand:</label>
+        <div>
+            <InputSelect @bind-Value="item.BrandID" class="form-control">
+                <option value="">--Select Brand--</option>
+                @if (Brands != null)
+                {
+                    foreach (var brand in Brands)
                     {
-                        foreach (var brand in Brands)
-                        {
-                            <option value="@brand.Id">@brand.Name</option>}
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => item.BrandID)" />
-            </div>
+                        <option value="@brand.Id">@brand.Name</option>}
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => item.BrandID)" />
         </div>
-        <div class="form-group">
-            <label>Category:</label>
-            <div>
-                <InputSelect @bind-Value="item.CategoryID" class="form-control">
-                    <option value="">--Select Category--</option>
-                    @if (Categories != null)
+    </div>
+    <div class="form-group">
+        <label>Category:</label>
+        <div>
+            <InputSelect @bind-Value="item.CategoryID" class="form-control">
+                <option value="">--Select Category--</option>
+                @if (Categories != null)
+                {
+                    foreach (var category in Categories)
                     {
-                        foreach (var category in Categories)
-                        {
-                            <option value="@category.Id">@category.Name</option>}
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => item.CategoryID)" />
-            </div>
+                        <option value="@category.Id">@category.Name</option>}
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => item.CategoryID)" />
         </div>
-    
-    
-        <button type="submit" class="btn btn-success btn-block">
-            Edit Item
-        </button>
-    
-    
-   
+    </div>
 
 </EditForm>
 
+<br />
+<button type="submit" class="btn btn-success btn-block" @onclick="ALL">
+    Edit Item
+</button>
 <br />
 <BackToList Target="listitems" />
 
@@ -122,6 +113,7 @@
     async Task EditItem()
     {
         await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid}", item);
+        _navManager.NavigateTo("/listitems/");
     }
 
     private IList<ListItem> ListItems;
@@ -135,6 +127,15 @@
         Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
         Brands = await _client.GetFromJsonAsync<List<Brand>>($"{Endpoints.BrandsEndpoint}");
         Conditions = await _client.GetFromJsonAsync<List<Condition>>($"{Endpoints.ConditionsEndpoint}");
+    }
+
+    public void ALL()
+    {
+        EditListItem();
+
+        EditItem();
+
+
     }
 }
 

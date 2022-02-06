@@ -45,6 +45,24 @@
         </div>
     </fieldset>
     <div class="form-group">
+        <label>User:</label>
+        <div>
+            <InputSelect @bind-Value="@traderequest.CreatedBy" class="form-control">
+                @if (AppUsers != null)
+                {
+                    @foreach (var user in AppUsers)
+                    {
+                        if (user.UserName != listitem.CreatedBy)
+                        {
+                            <option value="@user.UserName">@user.UserName</option>
+                        }
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => traderequest.CreatedBy)" />
+        </div>
+    </div>
+    <div class="form-group">
         <label>Item for trade:</label>
         <div>
             <InputSelect @bind-Value="traderequest.ItemID" class="form-control">
@@ -55,7 +73,11 @@
                     {
                         if (item.Id != listitem.ItemID)
                         {
-                            <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                            if (item.CreatedBy == traderequest.CreatedBy)
+                            {
+                                <option value="@item.Id">Name: @item.Name   Condition: @item.Condition.Name   Brand: @item.Brand.Name   Category: @item.Category.Name</option>
+                            }
+                            
                         }
 
                     }
@@ -135,6 +157,8 @@
         {
             _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
         }
+
+        traderequest.CreatedBy = "Admin";
     }
 
     private async Task CreateTradeRequest()
@@ -152,7 +176,7 @@
             await _client.PostAsJsonAsync(Endpoints.TradeRequestsEndpoint, traderequest);
             _navManager.NavigateTo("/adminlistitems/");
         }
-     
+
 
     }
 

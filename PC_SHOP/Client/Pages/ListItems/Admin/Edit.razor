@@ -4,7 +4,6 @@
 
 <h1>Edit Listing</h1>
 <br />
-<h3>Edit Listing Price:</h3>
 <EditForm Model="@listitem" OnValidSubmit="EditListItem">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -15,12 +14,8 @@
             <ValidationMessage For="@(() => listitem.Price)" />
         </div>
     </div>
-    <button type="submit" class="btn btn-success btn-block">
-        Edit Price
-    </button>
 </EditForm>
-<br />
-<h3>Edit Item:</h3>
+
 <EditForm Model="@item" OnValidSubmit="EditItem">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -86,15 +81,11 @@
     </div>
 
 
-    <button type="submit" class="btn btn-success btn-block">
-        Edit Item
-    </button>
-
-
-
-
 </EditForm>
 
+<button type="submit" class="btn btn-success btn-block" @onclick="ALL">
+    Edit Item
+</button>
 <br />
 <BackToList Target="adminlistitems" />
 
@@ -122,6 +113,7 @@
     async Task EditItem()
     {
         await _client.PutAsJsonAsync($"{Endpoints.ItemsEndpoint}/{itemid}", item);
+        _navManager.NavigateTo("/adminlistitems/");
     }
 
     private IList<ListItem> ListItems;
@@ -135,5 +127,14 @@
         Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
         Brands = await _client.GetFromJsonAsync<List<Brand>>($"{Endpoints.BrandsEndpoint}");
         Conditions = await _client.GetFromJsonAsync<List<Condition>>($"{Endpoints.ConditionsEndpoint}");
+    }
+
+    public void ALL()
+    {
+        EditListItem();
+
+        EditItem();
+
+
     }
 }

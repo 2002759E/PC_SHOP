@@ -82,7 +82,10 @@ namespace PC_SHOP.Server.Repository
                 if (entry.State == EntityState.Added)
                 {
                     ((BaseDomainModel)entry.Entity).DateCreated = DateTime.Now;
-                    ((BaseDomainModel)entry.Entity).CreatedBy = user.UserName;
+                    if (user.UserName != "Admin")
+                    {
+                        ((BaseDomainModel)entry.Entity).CreatedBy = user.UserName;
+                    }
                 }
             }
 

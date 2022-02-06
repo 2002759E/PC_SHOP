@@ -48,61 +48,61 @@ else
             @foreach (var listitem in ListItems)
             {
 
-            <tr>
-                <td>@listitem.Item.Name</td>
-                <td>@listitem.Item.Description</td>
-                <td>@listitem.Price</td>
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
+                <tr>
+                    <td>@listitem.Item.Name</td>
+                    <td>@listitem.Item.Description</td>
+                    <td>@listitem.Price</td>
+                    @if (Items != null)
                     {
-                        if (@listitem.ItemID == item.Id)
+                        foreach (var item in Items)
                         {
-                            <td>@item.Condition.Name</td>
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Condition.Name</td>
+                            }
                         }
                     }
-                }
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
+                    @if (Items != null)
                     {
-                        if (@listitem.ItemID == item.Id)
+                        foreach (var item in Items)
                         {
-                            <td>@item.Brand.Name</td>
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Brand.Name</td>
+                            }
                         }
                     }
-                }
-                @if (Items != null)
-                {
-                    foreach (var item in Items)
+                    @if (Items != null)
                     {
-                        if (@listitem.ItemID == item.Id)
+                        foreach (var item in Items)
                         {
-                            <td>@item.Category.Name</td>
+                            if (@listitem.ItemID == item.Id)
+                            {
+                                <td>@item.Category.Name</td>
+                            }
                         }
                     }
-                }
-                <td>@listitem.CreatedBy</td>
-                <td>@listitem.DateCreated</td>
-                <td>
+                    <td>@listitem.CreatedBy</td>
+                    <td>@listitem.DateCreated</td>
+                    <td>
 
-                    <a href="/adminlistitems/view/@listitem.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/adminlistitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <a href="/adminlistitems/trade/@listitem.Id" class="btn btn-info">
-                        <span class="oi oi-transfer"></span>
-                    </a>
-                    <a href="/adminlistitems/purchase/@listitem.Id" class="btn btn-success">
-                        <span class="oi oi-dollar"></span>
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
-            </tr>
+                        <a href="/adminlistitems/view/@listitem.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/adminlistitems/edit/@listitem.Id/@listitem.ItemID" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <a href="/adminlistitems/trade/@listitem.Id" class="btn btn-info">
+                            <span class="oi oi-transfer"></span>
+                        </a>
+                        <a href="/adminlistitems/purchase/@listitem.Id" class="btn btn-success">
+                            <span class="oi oi-dollar"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(listitem.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
 
             }
         </tbody>
@@ -113,6 +113,12 @@ else
 {
     <p style="color:red">Unable to delete lisitng. Please clear all requests related to listing first.</p>
     cascaded = false;
+}
+
+@if (cascadedall)
+{
+    <p style="color:red">Unable to delete all lisitngs. Some listings may have ongoing requests.</p>
+    cascadedall = false;
 }
 
 @code {
@@ -127,10 +133,12 @@ else
 
     public bool cascaded { get; set; } = false;
 
+    public bool cascadedall { get; set; } = false;
+
 
     protected async override Task OnInitializedAsync()
     {
-        _interceptor.MonitorEvent();
+        //_interceptor.MonitorEvent();
         ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
 
@@ -205,11 +213,29 @@ else
 
     async Task Clear()
     {
-        foreach (var listItem in ListItems)
+
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to clear all listed items?");
+        if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listItem.Id}");
-            await OnInitializedAsync();
+            foreach (var listItem in ListItems)
+            {
+                await _client.DeleteAsync($"{Endpoints.ListItemsEndpoint}/{listItem.Id}");
+                await OnInitializedAsync();
+
+                foreach (var li in ListItems)
+                {
+                    if (li.Id == listItem.Id)
+                    {
+                        cascadedall = true;
+                    }
+                }
+            }
         }
+        else
+        {
+            return;
+        }
+
 
     }
 

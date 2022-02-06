@@ -5,6 +5,21 @@
     <ValidationSummary />
     <fieldset disabled="@Disabled">
         <div class="form-group">
+            <label>User:</label>
+            <div>
+                <InputSelect @bind-Value="@item.CreatedBy" class="form-control">
+                    @if (AppUsers != null)
+                    {
+                        @foreach (var user in AppUsers)
+                        {
+                            <option value="@user.UserName">@user.UserName</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => item.CreatedBy)" />
+            </div>
+        </div>
+        <div class="form-group">
             <label>Name:</label>
             <div>
                 <InputText @bind-Value="@item.Name" class="form-control" />
@@ -87,12 +102,14 @@
     private IList<Category> Categories;
     private IList<Brand> Brands;
     private IList<Condition> Conditions;
+    private IList<AppUser> AppUsers;
 
     protected async override Task OnInitializedAsync()
     {
         Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
         Brands = await _client.GetFromJsonAsync<List<Brand>>($"{Endpoints.BrandsEndpoint}");
         Conditions = await _client.GetFromJsonAsync<List<Condition>>($"{Endpoints.ConditionsEndpoint}");
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
     }
 
 }

@@ -91,7 +91,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        _interceptor.MonitorEvent();
+        //_interceptor.MonitorEvent();
         Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
 
         AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");

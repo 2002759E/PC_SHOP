@@ -305,11 +305,20 @@ else
 
     async Task Clear()
     {
-        foreach (var tr in TradeRequests)
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to clear all requests?");
+        if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{tr.Id}");
-            await OnInitializedAsync();
+            foreach (var tr in TradeRequests)
+            {
+                await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{tr.Id}");
+                await OnInitializedAsync();
+            }
         }
+        else
+        {
+            return;
+        }
+
 
     }
 

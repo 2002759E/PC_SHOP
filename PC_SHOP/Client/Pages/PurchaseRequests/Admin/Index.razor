@@ -301,11 +301,20 @@ else
 
     async Task Clear()
     {
-        foreach (var pr in PurchaseRequests)
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to clear all request?");
+        if (confirm)
         {
-            await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{pr.Id}");
-            await OnInitializedAsync();
+            foreach (var pr in PurchaseRequests)
+            {
+                await _client.DeleteAsync($"{Endpoints.PurchaseRequestsEndpoint}/{pr.Id}");
+                await OnInitializedAsync();
+            }
         }
+        else
+        {
+            return;
+        }
+
 
     }
 

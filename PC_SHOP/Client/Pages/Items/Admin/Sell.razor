@@ -4,13 +4,23 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Listed Items for Swap/Sell</h3>
+<h3>List Items for Swap/Sell</h3>
 <hr />
 <br />
 
 <EditForm Model="@listitem" OnValidSubmit="checkexist">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <div class="form-group">
+        <label>User:</label>
+        <div>
+            <InputSelect @bind-Value="@listitem.CreatedBy" class="form-control">
+                <option value="Admin">Admin</option>
+                <option value="@item.CreatedBy">@item.CreatedBy</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => listitem.CreatedBy)" />
+        </div>
+    </div>
     <fieldset disabled>
         <div class="form-group">
             <label>Item:</label>
@@ -99,6 +109,8 @@
         {
             _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
         }
+
+        listitem.CreatedBy = "Admin";
     }
 
     public void checkexist()

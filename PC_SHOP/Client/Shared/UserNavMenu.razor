@@ -42,8 +42,8 @@
                         </NavLink>
                         @if (itemmenu)
                         {
-                            adminreqmenu = !adminreqmenu;
-                            sysmenu = !sysmenu;
+                            
+                           
                             <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => itemmenu = !itemmenu">
                                 <li class="nav-item px-6">
                                     <NavLink class="nav-link" href="adminitems">
@@ -62,13 +62,13 @@
                     </li>
 
                     <li class="nav-item dropdown px-9">
-                        <NavLink class="nav-link dropdown-toggle"  @onclick="()=>adminreqmenu= !adminreqmenu" id="navbarDropdown">
+                        <NavLink class="nav-link dropdown-toggle" @onclick="()=>adminreqmenu= !adminreqmenu" id="navbarDropdown">
                             Requests
                         </NavLink>
                         @if (adminreqmenu)
                         {
-                            itemmenu = !itemmenu;
-                            sysmenu = !sysmenu;
+                            
+                            
                             <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => adminreqmenu = !adminreqmenu">
                                 <li class="nav-item px-9">
                                     <NavLink class="nav-link" href="adminpurchaserequests">
@@ -91,8 +91,8 @@
                         </NavLink>
                         @if (sysmenu)
                         {
-                            itemmenu = !itemmenu;
-                            adminreqmenu = !adminreqmenu;
+                            
+                            
                             <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => sysmenu = !sysmenu">
                                 <li class="nav-item px-6">
                                     <NavLink class="nav-link" href="categories">
@@ -223,6 +223,7 @@
     </div>
 </nav>
 
+
 @code {
     private bool collapseNavMenu = true;
     private bool reqmenu { get; set; }
@@ -235,6 +236,7 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+
     }
 
     private async Task BeginSignOut(MouseEventArgs args)
@@ -242,6 +244,11 @@
         await SignOutManager.SetSignOutState();
         Navigation.NavigateTo("authentication/logout");
     }
+
+
+
+    
+    
 
 }
 

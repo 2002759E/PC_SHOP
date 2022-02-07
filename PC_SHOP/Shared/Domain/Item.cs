@@ -12,8 +12,10 @@ namespace PC_SHOP.Shared.Domain
     public class Item : BaseDomainModel
     {
         [Required]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name does not meet length requirements")]
         public string Name { get; set; }
         [Required]
+        [StringLength(1000, MinimumLength = 2, ErrorMessage = "Description does not meet length requirements")]
         public string Description { get; set; }
         [Required]
         public int? CategoryID { get; set; }

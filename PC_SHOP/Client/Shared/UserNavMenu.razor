@@ -9,6 +9,8 @@
     .navbar-custom {
         background-color: #00CED1;
     }
+
+
 </style>
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navbar-custom border-bottom box-shadow mb-6">
@@ -36,88 +38,34 @@
                             <span class="oi oi-list" aria-hidden="true"></span> Transactions
                         </NavLink>
                     </li>
-                    <li class="nav-item dropdown px-6">
-                        <NavLink class="nav-link dropdown-toggle"  @onclick="()=>itemmenu= !itemmenu" id="navbarDropdown">
-                            Items
-                        </NavLink>
-                        @if (itemmenu)
-                        {
-                            
-                           
-                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => itemmenu = !itemmenu">
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="adminitems">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Items
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="adminlistitems">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Listed Items
-                                    </NavLink>
-                                </li>
-                            </ul>
-
-
-                        }
+                    <li class="nav-item  dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="oi oi-list" aria-hidden="true"></span> Inventory
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="adminitems"><span class="oi oi-list" aria-hidden="true"></span> Items</a>
+                            <a class="dropdown-item" href="adminlistitems"><span class="oi oi-list" aria-hidden="true"></span> Listed Items</a>
+                        </div>
                     </li>
-
-                    <li class="nav-item dropdown px-9">
-                        <NavLink class="nav-link dropdown-toggle" @onclick="()=>adminreqmenu= !adminreqmenu" id="navbarDropdown">
-                            Requests
-                        </NavLink>
-                        @if (adminreqmenu)
-                        {
-                            
-                            
-                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => adminreqmenu = !adminreqmenu">
-                                <li class="nav-item px-9">
-                                    <NavLink class="nav-link" href="adminpurchaserequests">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Purchase Requests
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-9">
-                                    <NavLink class="nav-link" href="admintraderequests">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Trade Requests
-                                    </NavLink>
-                                </li>
-                            </ul>
-
-
-                        }
+                    <li class="nav-item  dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="oi oi-list" aria-hidden="true"></span> Requests
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="adminpurchaserequests"><span class="oi oi-list" aria-hidden="true"></span> Purchase Requests</a>
+                            <a class="dropdown-item" href="admintraderequests"><span class="oi oi-list" aria-hidden="true"></span> Trade Requests</a>
+                        </div>
                     </li>
-                    <li class="nav-item dropdown px-6">
-                        <NavLink class="nav-link dropdown-toggle" @onclick="()=>sysmenu= !sysmenu" id="navbarDropdown">
-                            System
-                        </NavLink>
-                        @if (sysmenu)
-                        {
-                            
-                            
-                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => sysmenu = !sysmenu">
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="categories">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Categories
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="conditions">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Conditions
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="brands">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Brands
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="payments">
-                                        <span class="oi oi-list" aria-hidden="true"></span> Payments
-                                    </NavLink>
-                                </li>
-                            </ul>
-
-
-                        }
+                    <li class="nav-item  dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="oi oi-list" aria-hidden="true"></span> System
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="categories"><span class="oi oi-list" aria-hidden="true"></span> Categories</a>
+                            <a class="dropdown-item" href="conditions"><span class="oi oi-list" aria-hidden="true"></span> Conditions</a>
+                            <a class="dropdown-item" href="brands"><span class="oi oi-list" aria-hidden="true"></span> Brands</a>
+                            <a class="dropdown-item" href="payments"><span class="oi oi-list" aria-hidden="true"></span> Payments</a>
+                        </div>
                     </li>
                 </Authorized>
                 <NotAuthorized>
@@ -136,37 +84,16 @@
                             <span class="oi oi-list-rich" aria-hidden="true"></span> Listed Items
                         </NavLink>
                     </li>
-                    <li class="nav-item dropdown px-6">
-                        <NavLink class="nav-link dropdown-toggle" @onclick="()=>reqmenu= !reqmenu" id="navbarDropdown">
+                    <li class="nav-item  dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="oi oi-bell" aria-hidden="true"></span> Requests
-                        </NavLink>
-                        @if (reqmenu)
-                        {
-                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => reqmenu = !reqmenu">
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="outpurchaserequests">
-                                        <span class="oi oi-data-transfer-upload" aria-hidden="true"></span> Outgoing Purchase
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="inpurchaserequests">
-                                        <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Incoming Purchase
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="outtraderequests">
-                                        <span class="oi oi-data-transfer-upload" aria-hidden="true"></span> Outgoing Trade
-                                    </NavLink>
-                                </li>
-                                <li class="nav-item px-6">
-                                    <NavLink class="nav-link" href="intraderequests">
-                                        <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Incoming Trade
-                                    </NavLink>
-                                </li>
-                            </ul>
-
-
-                        }
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="outpurchaserequests"><span class="oi oi-data-transfer-upload" aria-hidden="true"></span> Outgoing Purchase</a>
+                            <a class="dropdown-item" href="inpurchaserequests"><span class="oi oi-data-transfer-download" aria-hidden="true"></span> Incoming Purchase</a>
+                            <a class="dropdown-item" href="outtraderequests"><span class="oi oi-data-transfer-upload" aria-hidden="true"></span> Outgoing Trade</a>
+                            <a class="dropdown-item" href="intraderequests"><span class="oi oi-data-transfer-download" aria-hidden="true"></span> Incoming Trade</a>
+                        </div>
                     </li>
                     <li class="nav-item px-6">
                         <NavLink class="nav-link" href="usertransactions">
@@ -223,20 +150,19 @@
     </div>
 </nav>
 
-
 @code {
-    private bool collapseNavMenu = true;
-    private bool reqmenu { get; set; }
-    private bool sysmenu { get; set; }
-    private bool adminreqmenu { get; set; }
-    private bool itemmenu { get; set; }
+    bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu()
+    void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
 
+    void CollapseNavMenu()
+    {
+        collapseNavMenu = true;
     }
 
     private async Task BeginSignOut(MouseEventArgs args)
@@ -244,12 +170,6 @@
         await SignOutManager.SetSignOutState();
         Navigation.NavigateTo("authentication/logout");
     }
-
-
-
-    
-    
-
 }
 
 

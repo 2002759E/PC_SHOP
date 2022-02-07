@@ -12,6 +12,11 @@
 </a>
 <br />
 <br />
+<button class="btn btn-danger" @onclick="@(()=>Clear())">
+    Clear all
+</button>
+<br />
+<br />
 
 
 @if (Reviews == null)
@@ -34,22 +39,22 @@ else
         <tbody>
             @foreach (var review in Reviews)
             {
-            <tr>
-                <td>@review.Username</td>
-                <td>@review.Rating</td>
-                <td>@review.CreatedBy</td>
-                <td>
-                    <a href="/reviews/view/@review.Id" class="btn btn-primary">
-                        <span class="oi oi-book"></span>
-                    </a>
-                    <a href="/reviews/edit/@review.Id" class="btn btn-warning">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <button class="btn btn-danger" @onclick="@(()=>Delete (review.Id))">
-                        <span class="oi oi-delete"></span>
-                    </button>
-                </td>
-            </tr>
+                <tr>
+                    <td>@review.Username</td>
+                    <td>@review.Rating</td>
+                    <td>@review.CreatedBy</td>
+                    <td>
+                        <a href="/reviews/view/@review.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/reviews/edit/@review.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete (review.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -95,5 +100,24 @@ else
     {
         js.InvokeVoidAsync("DataTablesDispose", "#reviewsTable");
         _interceptor.DisposeEvent();
+    }
+
+    async Task Clear()
+    {
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to clear all reviews?");
+        if (confirm)
+        {
+            foreach (var rv in Reviews)
+            {
+                await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{rv.Id}");
+                await OnInitializedAsync();
+            }
+        }
+        else
+        {
+            return;
+        }
+
+
     }
 }

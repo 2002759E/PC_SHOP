@@ -1,0 +1,250 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+
+<style>
+
+    .navbar-custom {
+        background-color: #00CED1;
+    }
+</style>
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light navbar-custom border-bottom box-shadow mb-6">
+    <a class="navbar-brand" href="">PCTRADE</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="@NavMenuCssClass navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <AuthorizeView Roles="Administrator">
+                <Authorized>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="accounts">
+                            <span class="oi oi-list" aria-hidden="true"></span> Accounts
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="reviews">
+                            <span class="oi oi-list" aria-hidden="true"></span> Reviews
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="transactions">
+                            <span class="oi oi-list" aria-hidden="true"></span> Transactions
+                        </NavLink>
+                    </li>
+                    <li class="nav-item dropdown px-6">
+                        <NavLink class="nav-link dropdown-toggle"  @onclick="()=>itemmenu= !itemmenu" id="navbarDropdown">
+                            Items
+                        </NavLink>
+                        @if (itemmenu)
+                        {
+                            adminreqmenu = !adminreqmenu;
+                            sysmenu = !sysmenu;
+                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => itemmenu = !itemmenu">
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="adminitems">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Items
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="adminlistitems">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Listed Items
+                                    </NavLink>
+                                </li>
+                            </ul>
+
+
+                        }
+                    </li>
+
+                    <li class="nav-item dropdown px-9">
+                        <NavLink class="nav-link dropdown-toggle"  @onclick="()=>adminreqmenu= !adminreqmenu" id="navbarDropdown">
+                            Requests
+                        </NavLink>
+                        @if (adminreqmenu)
+                        {
+                            itemmenu = !itemmenu;
+                            sysmenu = !sysmenu;
+                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => adminreqmenu = !adminreqmenu">
+                                <li class="nav-item px-9">
+                                    <NavLink class="nav-link" href="adminpurchaserequests">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Purchase Requests
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-9">
+                                    <NavLink class="nav-link" href="admintraderequests">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Trade Requests
+                                    </NavLink>
+                                </li>
+                            </ul>
+
+
+                        }
+                    </li>
+                    <li class="nav-item dropdown px-6">
+                        <NavLink class="nav-link dropdown-toggle" @onclick="()=>sysmenu= !sysmenu" id="navbarDropdown">
+                            System
+                        </NavLink>
+                        @if (sysmenu)
+                        {
+                            itemmenu = !itemmenu;
+                            adminreqmenu = !adminreqmenu;
+                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => sysmenu = !sysmenu">
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="categories">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Categories
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="conditions">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Conditions
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="brands">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Brands
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="payments">
+                                        <span class="oi oi-list" aria-hidden="true"></span> Payments
+                                    </NavLink>
+                                </li>
+                            </ul>
+
+
+                        }
+                    </li>
+                </Authorized>
+                <NotAuthorized>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="alllistitems">
+                            <span class="oi oi-cart" aria-hidden="true"></span>  Marketplace
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="items">
+                            <span class="oi oi-box" aria-hidden="true"></span> Inventory
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="listitems">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Listed Items
+                        </NavLink>
+                    </li>
+                    <li class="nav-item dropdown px-6">
+                        <NavLink class="nav-link dropdown-toggle" @onclick="()=>reqmenu= !reqmenu" id="navbarDropdown">
+                            <span class="oi oi-bell" aria-hidden="true"></span> Requests
+                        </NavLink>
+                        @if (reqmenu)
+                        {
+                            <ul class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => reqmenu = !reqmenu">
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="outpurchaserequests">
+                                        <span class="oi oi-data-transfer-upload" aria-hidden="true"></span> Outgoing Purchase
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="inpurchaserequests">
+                                        <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Incoming Purchase
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="outtraderequests">
+                                        <span class="oi oi-data-transfer-upload" aria-hidden="true"></span> Outgoing Trade
+                                    </NavLink>
+                                </li>
+                                <li class="nav-item px-6">
+                                    <NavLink class="nav-link" href="intraderequests">
+                                        <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Incoming Trade
+                                    </NavLink>
+                                </li>
+                            </ul>
+
+
+                        }
+                    </li>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="usertransactions">
+                            <span class="oi oi-book" aria-hidden="true"></span> Transactions
+                        </NavLink>
+                    </li>
+
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <AuthorizeView Roles="Administrator">
+                <Authorized>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link">
+                            @context.User.Identity.Name
+                        </NavLink>
+                    </li>
+                </Authorized>
+                <NotAuthorized>
+
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="userreviews">
+                            <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity.Name Profile
+                        </NavLink>
+                    </li>
+
+                </NotAuthorized>
+            </AuthorizeView>
+            <AuthorizeView>
+                <Authorized>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="#" @onclick="BeginSignOut" Match="NavLinkMatch.All">
+                            <span class="oi oi-account-logout" aria-hidden="true"></span> Log out
+                        </NavLink>
+                    </li>
+                </Authorized>
+                <NotAuthorized>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="authentication/register" Match="NavLinkMatch.All">
+                            <span class="oi oi-plus" aria-hidden="true"></span> Register
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-6">
+                        <NavLink class="nav-link" href="authentication/login" Match="NavLinkMatch.All">
+                            <span class="oi oi-account-login" aria-hidden="true"></span> Log in
+                        </NavLink>
+                    </li>
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </ul>
+    </div>
+</nav>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool reqmenu { get; set; }
+    private bool sysmenu { get; set; }
+    private bool adminreqmenu { get; set; }
+    private bool itemmenu { get; set; }
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+
+}
+
+
+
+

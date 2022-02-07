@@ -1,8 +1,8 @@
 ﻿@page "/alllistitems/"
 @inject HttpClient _client
 @inject IJSRuntime js
-@attribute [Authorize]
 @implements IDisposable
+@attribute [Authorize]
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpInterceptorService _interceptor

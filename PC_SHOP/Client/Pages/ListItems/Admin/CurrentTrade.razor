@@ -1,0 +1,174 @@
+﻿@page "/adminlistitems/currenttrade/{id:int}"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@implements IDisposable
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpInterceptorService _interceptor
+
+
+<h3>Current Trade Requests for Listed Item</h3>
+
+
+@if (TradeRequests == null)
+{
+
+    <div class="alert alert-info">Loading Requests...</div>
+
+}
+else
+{
+    <table class="table table-responsive" id="currenttradetable">
+        <thead>
+            <tr>
+                <th>Item Owner</th>
+                <th>Item Requested</th>
+                <th>Item Price($)</th>
+                <th>Item For Trade</th>
+                <th>Offered By</th>
+                <th>Date Requested</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var traderequest in TradeRequests)
+            {
+                if (traderequest.ListItemID == @id)
+                {
+            <tr>
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@traderequest.ListItemID == listItem.Id)
+                        {
+                            @if (Items != null)
+                            {
+                                foreach (var item in Items)
+                                {
+                                    if (@traderequest.ListItem.ItemID == item.Id)
+                                    {
+                                        <td>@item.CreatedBy</td>
+                                        <td>@item.Name</td>
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                @if (ListItems != null)
+                {
+                    foreach (var listItem in ListItems)
+                    {
+                        if (@traderequest.ListItemID == listItem.Id)
+                        {
+                            <td>@listItem.Price</td>
+                        }
+                    }
+                }
+                <td>@traderequest.Item.Name</td>
+                <td>@traderequest.CreatedBy</td>
+                <td>@traderequest.DateCreated</td>
+                <td>
+                   <a href="/admintraderequests/view/@traderequest.Id" class="btn btn-primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/admintraderequests/edit/@traderequest.Id" class="btn btn-warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <button class="btn btn-danger" @onclick="@(()=>Delete (traderequest.Id))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+}
+
+<a href="/adminlistitems/trade/@id" class="btn btn-info">
+    Back to Offer
+</a>
+
+@code {
+
+    [Parameter] public int id { get; set; }
+
+    private List<TradeRequest> TradeRequests;
+    private IList<ListItem> ListItems;
+    private IList<Item> Items;
+    private List<AppUser> AppUsers;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private string _currentUserId;
+    private string _currentUserName;
+    private string _currentUserRole;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        TradeRequests = await _client.GetFromJsonAsync<List<TradeRequest>>($"{Endpoints.TradeRequestsEndpoint}");
+        ListItems = await _client.GetFromJsonAsync<List<ListItem>>($"{Endpoints.ListItemsEndpoint}");
+        Items = await _client.GetFromJsonAsync<List<Item>>($"{Endpoints.ItemsEndpoint}");
+
+        AppUsers = await _client.GetFromJsonAsync<List<AppUser>>($"{Endpoints.AccountsEndpoint}");
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _claims = user.Claims;
+            //_currentUserName = user.Identity.Name;
+            if (_claims.Count() > 0)
+            {
+                foreach (var claim in _claims)
+                {
+                    if (claim.Type == "sub")
+                    {
+                        _currentUserId = claim.Value;
+                        continue;
+
+                    }
+                    if (claim.Type == "name")
+                    {
+                        _currentUserName = claim.Value;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (_currentUserId != String.Empty)
+        {
+            _currentUserRole = await _client.GetStringAsync($"{Endpoints.AccountsEndpoint}/{_currentUserId}");
+        }
+    }
+
+    async Task Delete(int traderequestId)
+    {
+        var traderequest = TradeRequests.First(q => q.Id == traderequestId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete request?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.TradeRequestsEndpoint}/{traderequestId}");
+            await OnInitializedAsync();
+
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#currenttradetable");
+
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#currenttradetable");
+        _interceptor.DisposeEvent();
+    }
+
+}

@@ -9,6 +9,14 @@
 <hr />
 <br />
 
+<style>
+
+    .center {
+        text-align: center;
+    }
+
+</style>
+
 <EditForm Model="@traderequest" OnValidSubmit="CreateTradeRequest">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -99,7 +107,12 @@
     </button>
 
     <BackToList Target="adminlistitems" />
-
+    <br />
+    <div class="center">
+        <a href="/adminlistitems/currenttrade/@id" class="btn btn-info">
+            Current Trade Offers
+        </a>
+    </div>
 </EditForm>
 
 @code {

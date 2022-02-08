@@ -8,6 +8,14 @@
 <hr />
 <br />
 
+<style>
+
+    .center {
+        text-align: center;
+    }
+
+</style>
+
 <EditForm Model="@purchaserequest" OnValidSubmit="CreatePurchaseRequest">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -92,6 +100,12 @@
     </button>
 
     <BackToList Target="adminlistitems" />
+    <br />
+    <div class="center">
+        <a href="/adminlistitems/currentpurchase/@id" class="btn btn-info">
+            Current Purchase Offers
+        </a>
+    </div>
 
 </EditForm>
 
